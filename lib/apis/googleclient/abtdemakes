@@ -1,0 +1,157 @@
+{title: About Delaware Makes, body: {content: 
+    
+    
+    [{endIndex: 1, sectionBreak: {sectionStyle: {columnSeparatorStyle: NONE, contentDirection: LEFT_TO_RIGHT,
+    sectionType: CONTINUOUS}}}, {startIndex: 1, endIndex: 22,
+        
+        
+        paragraph: {elements:
+        
+        
+        
+        [
+            
+            {startIndex: 1, endIndex: 22, textRun: {content: About Delaware Makes 
+    , textStyle: {}}}
+    
+    ], paragraphStyle: {headingId: h.xjzd9a1jwqqh, namedStyleType: TITLE, direction: LEFT_TO_RIGHT}}},
+    
+    
+    
+    
+    {startIndex: 22, endIndex: 101,    
+    paragraph: {elements: [{startIndex: 22, endIndex: 101, textRun: {content: This document describes and scopes the goals and operations of Delaware      
+    Makes.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT}}}, {startIndex: 101, endIndex: 109, paragraph: {elements:  
+    [{startIndex: 101, endIndex: 109, textRun: {content: Mission
+    , textStyle: {}}}], paragraphStyle: {headingId: h.40ccusow60sw, namedStyleType: HEADING_2, direction: LEFT_TO_RIGHT}}}, {startIndex: 109, endIndex:    
+    258, paragraph: {elements: [{startIndex: 109, endIndex: 258, textRun: {content: Leverage the skills and resources of local makers to sustainably       
+    produce high quality reusable PPE for workers in need during the COVID-19 pandemic.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT}}}, {startIndex: 258, endIndex: 283, paragraph: {elements:  
+    [{startIndex: 258, endIndex: 283, textRun: {content: Goals and Implementation
+    , textStyle: {}}}], paragraphStyle: {headingId: h.6x71a7av199v, namedStyleType: HEADING_2, direction: LEFT_TO_RIGHT}}}, {startIndex: 283, endIndex:    
+    429, paragraph: {elements: [{startIndex: 283, endIndex: 429, textRun: {content: Delaware Makes sustainably produces and distributes high quality,      
+    reusable PPE to frontline workers, healthcare providers, and first responders.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {unit: PT}, indentStart: {unit: PT}}}},   
+    {startIndex: 429, endIndex: 430, paragraph: {elements: [{startIndex: 429, endIndex: 430, textRun: {content:
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {unit: PT}, indentStart: {unit: PT}}}},   
+    {startIndex: 430, endIndex: 634, paragraph: {elements: [{startIndex: 430, endIndex: 442, textRun: {content: Distribution, textStyle: {bold: true}}},   
+    {startIndex: 442, endIndex: 482, textRun: {content: : We prioritize deliveries to those who , textStyle: {}}}, {startIndex: 482, endIndex: 512,        
+    textRun: {content: most need and can least afford, textStyle: {bold: true}}}, {startIndex: 512, endIndex: 634, textRun: {content:  PPE, such as        
+    not-for-profit clinics and small institutions. We provide PPE exclusively to end-users (not to resellers).
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, textStyle: {}}}}, {startIndex: 634, endIndex: 773, paragraph: {elements: [{startIndex:  
+    634, endIndex: 643, textRun: {content: Geography, textStyle: {bold: true}}}, {startIndex: 643, endIndex: 773, textRun: {content: : We are focused on   
+    the greater Delaware area but as the pandemic evolves we may support other regions that have been harder hit.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, textStyle: {}}}}, {startIndex: 773, endIndex: 1139, paragraph: {elements: [{startIndex: 
+    773, endIndex: 787, textRun: {content: Sustainability, textStyle: {bold: true}}}, {startIndex: 787, endIndex: 1139, textRun: {content: : Due to the    
+    unreliable nature of depending on donations, and the time commitment that fundraising requires, we ask for a small suggested contribution to cover the 
+    material costs of the PPE. However, we do not require payment, and will provide PPE for no charge if it is not possible for a recipient to cover costs 
+    for financial or logistical reasons.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, textStyle: {underline: false}}}}, {startIndex: 1139, endIndex: 1473, paragraph:
+    {elements: [{startIndex: 1139, endIndex: 1150, textRun: {content: Reusability, textStyle: {bold: true}}}, {startIndex: 1150, endIndex: 1473, textRun:  
+    {content: : Since materials are presently hard to come by and most fabrication techniques require large amounts of tool and operator time we focus on  
+    PPE that is durable and designed to be reused for long periods in demanding environments. We deliver only to users who plan to repeatedly sanitize and 
+    reuse the products as intended.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, textStyle: {underline: false}}}}, {startIndex: 1473, endIndex: 1584, paragraph:
+    {elements: [{startIndex: 1473, endIndex: 1481, textRun: {content: Products, textStyle: {bold: true}}}, {startIndex: 1481, endIndex: 1584, textRun:     
+    {content: : For the near term our focus is on manufacturing and distributing face shields with these components:
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, textStyle: {underline: false}}}}, {startIndex: 1584, endIndex: 1735, paragraph:
+    {elements: [{startIndex: 1584, endIndex: 1735, textRun: {content: A solid plastic headband, currently a FDM-printed PETG Maker Nexus Remix or a variantof the Prusa RC3 designed for injection molding in PETG and ABS.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 54, unit: PT}, indentStart:   
+    {magnitude: 72, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, nestingLevel: 1, textStyle: {underline: false}}}}, {startIndex: 1735, endIndex: 1832,   
+    paragraph: {elements: [{startIndex: 1735, endIndex: 1832, textRun: {content: A clear plastic shield laser-cut from 0.02” PETG, with an FDM-printed PETGbottom reinforcement.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 54, unit: PT}, indentStart:   
+    {magnitude: 72, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, nestingLevel: 1, textStyle: {underline: false}}}}, {startIndex: 1832, endIndex: 1943,   
+    paragraph: {elements: [{startIndex: 1832, endIndex: 1943, textRun: {content: A medical-grade thermoplastic elastomer adjustable strap with FDM-printed 
+    PETG adapters to mount on the frame.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 54, unit: PT}, indentStart:   
+    {magnitude: 72, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, nestingLevel: 1, textStyle: {underline: false}}}}, {startIndex: 1943, endIndex: 2221,   
+    paragraph: {elements: [{startIndex: 1943, endIndex: 1948, textRun: {content: Labor, textStyle: {bold: true}}}, {startIndex: 1948, endIndex: 2221,      
+    textRun: {content: : We are a volunteer-run organization. Our team provides their labor for free but may be reimbursed for expenses such as gas and    
+    materials. However for some tasks it may be necessary to contract with specialized for-profit firms (long distance shipping, die cutting, etc).        
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, textStyle: {underline: false}}}}, {startIndex: 2221, endIndex: 2540, paragraph:
+    {elements: [{startIndex: 2221, endIndex: 2229, textRun: {content: Finances, textStyle: {bold: true}}}, {startIndex: 2229, endIndex: 2540, textRun:     
+    {content: : We aim to operate at break-even. Donations will pay for materials and costs incurred during production and shipment. Any remaining funds   
+    after operations cease will be donated to New Castle County Libraries. Detailed records of expenditures and receipts will be published in a publicly   
+    available spreadsheet.
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.o9a87jqzhmn8, textStyle: {underline: false}}}}, {startIndex: 2540, endIndex: 2541, paragraph:
+    {elements: [{startIndex: 2540, endIndex: 2541, textRun: {content:
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {unit: PT}, indentStart: {unit: PT}}}},   
+    {startIndex: 2541, endIndex: 2542, paragraph: {elements: [{startIndex: 2541, endIndex: 2542, textRun: {content:
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {unit: PT}, indentStart: {unit: PT}}}},   
+    {startIndex: 2542, endIndex: 2563, paragraph: {elements: [{startIndex: 2542, endIndex: 2563, textRun: {content: Organizational Roles
+    , textStyle: {}}}], paragraphStyle: {headingId: h.jf6r7rvrbfhr, namedStyleType: HEADING_2, direction: LEFT_TO_RIGHT}}}, {startIndex: 2563, endIndex:   
+    2694, paragraph: {elements: [{startIndex: 2563, endIndex: 2568, textRun: {content: Maker, textStyle: {bold: true}}}, {startIndex: 2568, endIndex: 2694,textRun: {content: : prints strap adapters, bottom shield reinforcements, and ear savers. May include laser cutting and other fabrication tasks.       
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.t1clai6mio2l, textStyle: {underline: false}}}}, {startIndex: 2694, endIndex: 2808, paragraph:
+    {elements: [{startIndex: 2694, endIndex: 2706, textRun: {content: Hub/Assembly, textStyle: {bold: true}}}, {startIndex: 2706, endIndex: 2808, textRun: 
+    {content: : collects parts in a centralized location, does QA/cleanup, and batches parts into kits for delivery
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.t1clai6mio2l, textStyle: {underline: false}}}}, {startIndex: 2808, endIndex: 2844, paragraph:
+    {elements: [{startIndex: 2808, endIndex: 2823, textRun: {content: Pickup/Delivery, textStyle: {bold: true}}}, {startIndex: 2823, endIndex: 2844,       
+    textRun: {content: : moves stuff around
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.t1clai6mio2l, textStyle: {underline: false}}}}, {startIndex: 2844, endIndex: 2950, paragraph:
+    {elements: [{startIndex: 2844, endIndex: 2850, textRun: {content: Demand, textStyle: {bold: true}}}, {startIndex: 2850, endIndex: 2950, textRun:       
+    {content: : finds and quantifies need (calls, emails organizations and individuals who may need our products)
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.t1clai6mio2l, textStyle: {underline: false}}}}, {startIndex: 2950, endIndex: 3063, paragraph:
+    {elements: [{startIndex: 2950, endIndex: 2959, textRun: {content: Admin/Ops, textStyle: {bold: true}}}, {startIndex: 2959, endIndex: 3063, textRun:    
+    {content: : creates strategy, assesses new opportunities, oversees logistics, makes sure everything goes smoothly
+    , textStyle: {}}}], paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, indentFirstLine: {magnitude: 18, unit: PT}, indentStart:   
+    {magnitude: 36, unit: PT}}, bullet: {listId: kix.t1clai6mio2l, textStyle: {underline: false}}}}]}, documentStyle: {background: {color: {}},
+    pageNumberStart: 1, marginTop: {magnitude: 31.5, unit: PT}, marginBottom: {magnitude: 72, unit: PT}, marginRight: {magnitude: 72, unit: PT},
+    marginLeft: {magnitude: 72, unit: PT}, pageSize: {height: {magnitude: 792, unit: PT}, width: {magnitude: 612, unit: PT}}, marginHeader: {magnitude: 36,unit: PT}, marginFooter: {magnitude: 36, unit: PT}, useCustomHeaderFooterMargins: true}, namedStyles: {styles: [{namedStyleType: NORMAL_TEXT,
+    textStyle: {bold: false, italic: false, underline: false, strikethrough: false, smallCaps: false, backgroundColor: {}, foregroundColor: {color:        
+    {rgbColor: {}}}, fontSize: {magnitude: 11, unit: PT}, weightedFontFamily: {fontFamily: Arial, weight: 400}, baselineOffset: NONE}, paragraphStyle:     
+    {namedStyleType: NORMAL_TEXT, alignment: START, lineSpacing: 115, direction: LEFT_TO_RIGHT, spacingMode: COLLAPSE_LISTS, spaceAbove: {unit: PT},       
+    spaceBelow: {unit: PT}, borderBetween: {color: {}, width: {unit: PT}, padding: {unit: PT}, dashStyle: SOLID}, borderTop: {color: {}, width: {unit: PT},padding: {unit: PT}, dashStyle: SOLID}, borderBottom: {color: {}, width: {unit: PT}, padding: {unit: PT}, dashStyle: SOLID}, borderLeft: {color: {},   
+    width: {unit: PT}, padding: {unit: PT}, dashStyle: SOLID}, borderRight: {color: {}, width: {unit: PT}, padding: {unit: PT}, dashStyle: SOLID},
+    indentFirstLine: {unit: PT}, indentStart: {unit: PT}, indentEnd: {unit: PT}, keepLinesTogether: false, keepWithNext: false, avoidWidowAndOrphan: true, 
+    shading: {backgroundColor: {}}}}, {namedStyleType: HEADING_1, textStyle: {fontSize: {magnitude: 20, unit: PT}}, paragraphStyle: {namedStyleType:       
+    NORMAL_TEXT, direction: LEFT_TO_RIGHT, spaceAbove: {magnitude: 20, unit: PT}, spaceBelow: {magnitude: 6, unit: PT}, keepLinesTogether: true,
+    keepWithNext: true}}, {namedStyleType: HEADING_2, textStyle: {bold: false, fontSize: {magnitude: 16, unit: PT}}, paragraphStyle: {namedStyleType:      
+    NORMAL_TEXT, direction: LEFT_TO_RIGHT, spaceAbove: {magnitude: 18, unit: PT}, spaceBelow: {magnitude: 6, unit: PT}, keepLinesTogether: true,
+    keepWithNext: true}}, {namedStyleType: HEADING_3, textStyle: {bold: false, foregroundColor: {color: {rgbColor: {red: 0.2627451, green: 0.2627451, blue:0.2627451}}}, fontSize: {magnitude: 14, unit: PT}}, paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, spaceAbove: {magnitude: 16,unit: PT}, spaceBelow: {magnitude: 4, unit: PT}, keepLinesTogether: true, keepWithNext: true}}, {namedStyleType: HEADING_4, textStyle:
+    {foregroundColor: {color: {rgbColor: {red: 0.4, green: 0.4, blue: 0.4}}}, fontSize: {magnitude: 12, unit: PT}}, paragraphStyle: {namedStyleType:       
+    NORMAL_TEXT, direction: LEFT_TO_RIGHT, spaceAbove: {magnitude: 14, unit: PT}, spaceBelow: {magnitude: 4, unit: PT}, keepLinesTogether: true,
+    keepWithNext: true}}, {namedStyleType: HEADING_5, textStyle: {foregroundColor: {color: {rgbColor: {red: 0.4, green: 0.4, blue: 0.4}}}, fontSize:       
+    {magnitude: 11, unit: PT}}, paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, spaceAbove: {magnitude: 12, unit: PT}, spaceBelow: 
+    {magnitude: 4, unit: PT}, keepLinesTogether: true, keepWithNext: true}}, {namedStyleType: HEADING_6, textStyle: {italic: true, foregroundColor: {color:{rgbColor: {red: 0.4, green: 0.4, blue: 0.4}}}, fontSize: {magnitude: 11, unit: PT}}, paragraphStyle: {namedStyleType: NORMAL_TEXT, direction:
+    LEFT_TO_RIGHT, spaceAbove: {magnitude: 12, unit: PT}, spaceBelow: {magnitude: 4, unit: PT}, keepLinesTogether: true, keepWithNext: true}},
+    {namedStyleType: TITLE, textStyle: {fontSize: {magnitude: 26, unit: PT}}, paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT,      
+    spaceAbove: {unit: PT}, spaceBelow: {magnitude: 3, unit: PT}, keepLinesTogether: true, keepWithNext: true}}, {namedStyleType: SUBTITLE, textStyle:     
+    {italic: false, foregroundColor: {color: {rgbColor: {red: 0.4, green: 0.4, blue: 0.4}}}, fontSize: {magnitude: 15, unit: PT}, weightedFontFamily:      
+    {fontFamily: Arial, weight: 400}}, paragraphStyle: {namedStyleType: NORMAL_TEXT, direction: LEFT_TO_RIGHT, spaceAbove: {unit: PT}, spaceBelow:
+    {magnitude: 16, unit: PT}, keepLinesTogether: true, keepWithNext: true}}]}, lists: {kix.t1clai6mio2l: {listProperties: {nestingLevels:
+    [{bulletAlignment: START, glyphSymbol: ●, glyphFormat: %0, indentFirstLine: {magnitude: 18, unit: PT}, indentStart: {magnitude: 36, unit: PT},
+    textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ○, glyphFormat: %1, indentFirstLine: {magnitude: 54, unit: PT},  
+    indentStart: {magnitude: 72, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ■, glyphFormat: %2,      
+    indentFirstLine: {magnitude: 90, unit: PT}, indentStart: {magnitude: 108, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: 
+    START, glyphSymbol: ●, glyphFormat: %3, indentFirstLine: {magnitude: 126, unit: PT}, indentStart: {magnitude: 144, unit: PT}, textStyle: {underline:   
+    false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ○, glyphFormat: %4, indentFirstLine: {magnitude: 162, unit: PT}, indentStart:
+    {magnitude: 180, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ■, glyphFormat: %5, indentFirstLine: 
+    {magnitude: 198, unit: PT}, indentStart: {magnitude: 216, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START,
+    glyphSymbol: ●, glyphFormat: %6, indentFirstLine: {magnitude: 234, unit: PT}, indentStart: {magnitude: 252, unit: PT}, textStyle: {underline: false},  
+    startNumber: 1}, {bulletAlignment: START, glyphSymbol: ○, glyphFormat: %7, indentFirstLine: {magnitude: 270, unit: PT}, indentStart: {magnitude: 288,  
+    unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ■, glyphFormat: %8, indentFirstLine: {magnitude: 306, 
+    unit: PT}, indentStart: {magnitude: 324, unit: PT}, textStyle: {underline: false}, startNumber: 1}]}}, kix.o9a87jqzhmn8: {listProperties:
+    {nestingLevels: [{bulletAlignment: START, glyphSymbol: ●, glyphFormat: %0, indentFirstLine: {magnitude: 18, unit: PT}, indentStart: {magnitude: 36,    
+    unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ○, glyphFormat: %1, indentFirstLine: {magnitude: 54,  
+    unit: PT}, indentStart: {magnitude: 72, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ■,
+    glyphFormat: %2, indentFirstLine: {magnitude: 90, unit: PT}, indentStart: {magnitude: 108, unit: PT}, textStyle: {underline: false}, startNumber: 1},  
+    {bulletAlignment: START, glyphSymbol: ●, glyphFormat: %3, indentFirstLine: {magnitude: 126, unit: PT}, indentStart: {magnitude: 144, unit: PT},        
+    textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ○, glyphFormat: %4, indentFirstLine: {magnitude: 162, unit: PT}, 
+    indentStart: {magnitude: 180, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ■, glyphFormat: %5,     
+    indentFirstLine: {magnitude: 198, unit: PT}, indentStart: {magnitude: 216, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment:START, glyphSymbol: ●, glyphFormat: %6, indentFirstLine: {magnitude: 234, unit: PT}, indentStart: {magnitude: 252, unit: PT}, textStyle: {underline:   
+    false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ○, glyphFormat: %7, indentFirstLine: {magnitude: 270, unit: PT}, indentStart:
+    {magnitude: 288, unit: PT}, textStyle: {underline: false}, startNumber: 1}, {bulletAlignment: START, glyphSymbol: ■, glyphFormat: %8, indentFirstLine: 
+    {magnitude: 306, unit: PT}, indentStart: {magnitude: 324, unit: PT}, textStyle: {underline: false}, startNumber: 1}]}}}, suggestionsViewMode:
+    SUGGESTIONS_INLINE, documentId: 1BuUjJf_Q_P96LX0cDAwqvo8PMdw9tb-Aj2fh1tAVuOg}

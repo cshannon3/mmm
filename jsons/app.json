@@ -1,0 +1,78 @@
+{
+    "AppName": "de_makes_final",
+    "models": {
+        "design":{
+            "sourceTypes": ["firebase"],
+            "params": {
+                "name":{"type":"String"},
+                "description":{"type":"String"},
+                "user_id":{"type":"String"},
+                "approved":{"type":"bool"},
+                "admin": {"type": "bool"},
+                "submissionDate": {"type": "DateTime"},
+                "linkedData": {"type": "Map"}
+            },
+            "screens":{
+                "screen":true,
+                "list_screen": true
+            },
+            "components":{
+                "tile":false,
+                "form": true,
+                "chart":false
+            }
+        },
+        "user": {
+            "sourceTypes": ["localdb"],
+            "params": {
+                "name":{"type":"String"},
+                "email":{"type":"String"},
+                "phone":{"type":"String"},
+                "zipcode":{"type":"String"},
+                "county":{"type":"String"},
+                "photoUrl": {"type": "String"},
+                "private":{"type":"bool"},
+                "admin": {"type": "bool"},
+                "verified": {"type": "bool"},
+                "hasAccount": {"type": "bool"},
+                "signupDate": {"type": "DateTime"},
+                "linkedData": {"type": "Map"}
+            },
+            "screens":{
+                "screen":true,
+                "list_screen": true
+            },
+            "components":{
+                "tile":false,
+                "form": false,
+                "chart":false
+            }
+            
+        },
+        "update": {
+            "sourceTypes": [],
+            "params": {
+                "id": {"type": "String"},
+                "userID": {"type": "String"},
+                "type": {"type": "String"},
+                "name":{"type":"String"},
+                "description":{"type":"double"},
+                "timeOfSubmission":{"type":"DateTime"},
+                "score":{"type":"int"},
+                "reservation":{"type":"bool"},
+                "linkedData":{"type":"String"}
+            },
+            "screens":{
+                "screen":true
+            },
+            "components":{
+                "tile":false,
+                "form": false
+            }
+            
+        }
+    },
+    "UI": {
+    }
+
+}
