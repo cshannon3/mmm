@@ -23,7 +23,7 @@ class OrgTile extends StatelessWidget {
   }
   Widget requestTile(Map requestData, BuildContext context){
     var appState = locator<AppState>();
-    bool loggedIn = appState.authState.isLoggedIn;
+    bool loggedIn = appState.loggedIn;
     String name=safeGet(key:"designName", map:requestData, alt:"");
     var quantity = safeGet(key:"quantityRequested", map:requestData, alt:0);
 

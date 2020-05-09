@@ -20,18 +20,21 @@ MaterialButton(
 
 
 Widget altButton({@required double w, @required Function() onPressed, @required String text})=>
-      Container(
-             // margin: EdgeInsets.symmetric(vertical: 15),
-              width: flexW(w),
-              child: FlatButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                color: Colors.grey[300],
-                onPressed: onPressed,
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                child: TitleText(text, color: Colors.black),
+    Padding(
+      padding:  (w==null)?EdgeInsets.all(8.0):
+        EdgeInsets.symmetric(horizontal: 30, vertical: 20.0),
+    child: Container(
+      width: double.infinity,
+                child: FlatButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  color: Colors.grey[300],
+                  onPressed: onPressed,
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: TitleText(text, color: Colors.black),
+                ),
               ),
-            );
+      );
 
 Widget googleSignInWidget(
         {@required Function() onTap, double h = 50.0, double w = 120}) =>

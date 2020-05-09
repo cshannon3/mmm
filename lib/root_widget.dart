@@ -4,6 +4,7 @@ import 'package:de_makes_final/routes.dart';
 import 'package:de_makes_final/service_locator.dart';
 import 'package:de_makes_final/state/app_state.dart';
 import 'package:de_makes_final/state/auth_state.dart';
+import 'package:de_makes_final/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 Widget bodyPadding({double width = 800.0, Widget screen}) {
@@ -25,22 +26,16 @@ class RootPage extends StatelessWidget {
 
   List<Widget> actionList(BuildContext context) {
      var state = locator<AppState>();
-    return state.authState.userModel!=null
+    return state.loggedIn
         ? [
            FlatButton(
                 onPressed: () {
                   if ("/profile" != currentRoute)
                     tappedMenuButton(context, "/profile");
                 },
-                child: Text( state.authState.userModel.displayName.toUpperCase(),
+                child: Text( safeGet(map:state.currentUser, key:"displayName", alt:"").toUpperCase(),
                     style: TextStyle(color: Colors.white, fontSize: 16.0)))
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Text(
-            //     state.authState.userModel.displayName,
-            //     style: TextStyle(color: Colors.white),
-            //   ),
-            // )
+
           ]
         : [
             FlatButton(
@@ -65,6 +60,7 @@ class RootPage extends StatelessWidget {
 
   appbar(BuildContext context, String currentRoute) => AppBar(
         backgroundColor: Colors.black,
+        leading: Container(),
         title: InkWell(
           onTap: () {},
           child: Text("DE Makes",
@@ -81,6 +77,7 @@ class RootPage extends StatelessWidget {
                 children: <Widget>[
                   menuButton(context, "Home", "/"),
                   menuButton(context, "Locations", "/map"),
+                  menuButton(context, "About Us", "/aboutus"),
                   Expanded(
                     child: Container(),
                   ),
@@ -109,15 +106,7 @@ class RootPage extends StatelessWidget {
         ),
       );
 
-    // Widget overlay(Widget overlayWidget, Size s){
-    //   return Container(
-    //     child: Center(
-    //       child: FractionallySizedBox(
-
-    //       ),
-    //     ),
-    //   );
-    // }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +128,27 @@ class RootPage extends StatelessWidget {
   }
 }
 
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Text(
+            //     state.authState.userModel.displayName,
+            //     style: TextStyle(color: Colors.white),
+            //   ),
+            // )
  // s)overlay
         //  state.overlay=="request"?overlay(RequestsP, s):
 
           // Overlay
 
+   // Widget overlay(Widget overlayWidget, Size s){
+    //   return Container(
+    //     child: Center(
+    //       child: FractionallySizedBox(
 
+    //       ),
+    //     ),
+    //   );
+    // }
   // @override
   // void initState() {
   //   // TODO: implement initState

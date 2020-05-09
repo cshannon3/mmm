@@ -1,9 +1,7 @@
-import 'dart:io';
-import 'package:de_makes_final/models/user.dart';
-import 'package:de_makes_final/repos/firestore_repo.dart' as fsRepo;
-import 'package:de_makes_final/service_locator.dart';
+
+//import 'package:de_makes_final/models/user.dart';
+import 'package:de_makes_final/apis/firebase/firestore_repo.dart' as fsRepo;
 import 'package:de_makes_final/shared_widgets/shared_widgets.dart';
-import 'package:de_makes_final/state/app_state.dart';
 import 'package:de_makes_final/state/base_state.dart';
 import 'package:de_makes_final/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,45 +18,14 @@ class AuthState extends BaseState {
   String userId;//final  fb.Messaging _firebaseMessaging = fb.messaging();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();//fb.Query _profileQuery;
-  bool _profileQuery = false;
-  List<User> _profileUserModelList;
-  User _userModel;//bool _isBusy;
-  bool get isLoggedIn => _userModel!=null;
-  User get userModel => _userModel;
-
-  User get profileUserModel {
-    if (_profileUserModelList != null && _profileUserModelList.length > 0) {
-      return _profileUserModelList.last;
-    } else {
-      return null;
-    }
-  }
-
-  setUserModel({User newUserModel, String id, bool logout=false}){
-    if(logout)
-      _userModel=null;
-    else{
-      _userModel=newUserModel;
-      if(id!=null)
-        _userModel.id= id;
-    }
-   // var appState =  locator<AppState>();
-    //appState.currentUser=_userModel;
-  }
- 
-
-  void removeLastUser() {
-    _profileUserModelList.removeLast();
-  }
 
   /// Logout from device
   void logoutCallback() {
     authStatus = AuthStatus.NOT_LOGGED_IN;
     userId = '';
-    setUserModel(logout:true);
-  //  _userModel = null;
+    //setUserModel(logout:true);
     user = null;
-    _profileUserModelList = null;
+   // _profileUserModelList = null;
     if (isSignInWithGoogle) {
       _googleSignIn.signOut();
       logEvent('google_logout');
@@ -67,27 +34,7 @@ class AuthState extends BaseState {
     notifyListeners();
   }
 
-  /// Alter select auth method, login and sign up page
-  void openSignUpPage() {
-    authStatus = AuthStatus.NOT_LOGGED_IN;
-    userId = '';
-    notifyListeners();
-  }
-
-  databaseInit() {
-    try {
-      if (_profileQuery == false) {
-        fsRepo
-            .getFirebaseItem(collectionName: "users", id: user.uid)
-            .then((map) {
-          _profileQuery = map != null;
-          _onProfileChanged(map);
-        });
-      }
-    } catch (error) {
-      cprint(error, errorIn: 'databaseInit');
-    }
-  }
+  
 
   /// Verify user's credentials for login
   Future<String> signIn(String email, String password,
@@ -109,24 +56,19 @@ class AuthState extends BaseState {
 
 
   /// Create new user's profile in db
-  Future<String> signUp(User newUserModel,
+  Future<String> signUp(//User newUserModel,
+  String userEmail,
       {GlobalKey<ScaffoldState> scaffoldKey, String password}) async {
     try {
       loading = true;
+      print("s");
       var result = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: userModel.email,
+        email: userEmail,
         password: password,
       );
       user = result.user;
+      print(user.displayName);
       authStatus = AuthStatus.LOGGED_IN;  //  kAnalytics.logSignUp(signUpMethod: 'register');
-      UserUpdateInfo updateInfo = UserUpdateInfo();
-      updateInfo.displayName = newUserModel.displayName;
-      updateInfo.photoUrl = newUserModel.profilePic;
-      await result.user.updateProfile(updateInfo);
-      setUserModel(newUserModel: newUserModel, id: user.uid);
-     // _userModel = userModel; // _userModel.id = user.uid;
-      createUser(_userModel, isNewUser: true);
-
       return user.uid;
     } catch (error) {
       loading = false;
@@ -136,23 +78,6 @@ class AuthState extends BaseState {
     }
   }
 
-  /// `Create` and `Update` user
-  /// IF `newUser` is true new user is created
-  /// Else existing user will update with new values
-  createUser(User newUserModel, {bool isNewUser = false}) {
-    if (isNewUser) {// Create username by the combination of name and id
-      newUserModel.userName = getUserName(id: newUserModel.id, name: user.displayName);
-      print(newUserModel.userName);//kAnalytics.logEvent('create_newUser',{});// Time at which user is created
-      newUserModel.createdAt = DateTime.now().toUtc().toString();
-    }
-    fsRepo.saveToFirebase(
-        collectionName: "users", itemMap: newUserModel.toJson(), id: newUserModel.id);
-    setUserModel(newUserModel: newUserModel);
-    if (_profileUserModelList != null) {
-      _profileUserModelList.last = _userModel;
-    }
-    loading = false;
-  }
 
   /// Fetch current user profile
   Future<FirebaseUser> getCurrentUser() async {
@@ -163,13 +88,11 @@ class AuthState extends BaseState {
       if (user != null) {
         print("User"); // print(user.displayName);
         authStatus = AuthStatus.LOGGED_IN;
-        userId = user.uid;
-        await getProfileUser();
+        userId = user.uid;   //  await getProfileUser();
          return user;
       } else {
         authStatus = AuthStatus.NOT_LOGGED_IN;
-      }
-    //  loading = false;
+      } //  loading = false;
     return user;
     } catch (error) {
       loading = false;
@@ -180,25 +103,27 @@ class AuthState extends BaseState {
   }
 
   /// Reload user to get refresh user data
-  reloadUser() async {
+  Future<bool> reloadUser() async {
     await user.reload();
     user = await _firebaseAuth.currentUser();
     if (user.isEmailVerified) {
-      userModel.isVerified = true;  // If user verifed his email // Update user in firebase realtime kDatabase
-      createUser(userModel);
+      
+     // userModel.isVerified = true;  // If user verifed his email // Update user in firebase realtime kDatabase
+    //  createUser(userModel);
       cprint('User email verification complete');
       logEvent('email_verification_complete',
-          parameter: {userModel.userName: user.email});
+          parameter: {user.email: user.email});
+      return true;
     }
+    return false;
   }
-
   /// Send email verification link to email2
-  Future<void> sendEmailVerification(
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<void> sendEmailVerification({ 
+      GlobalKey<ScaffoldState> scaffoldKey}) async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     user.sendEmailVerification().then((_) {
       logEvent('email_verifcation_sent',
-          parameter: {userModel.displayName: user.email});
+          parameter: {user.displayName: user.email});
       customSnackBar(
         scaffoldKey,
         'An email verification link is send to your email.',
@@ -206,134 +131,12 @@ class AuthState extends BaseState {
     }).catchError((error) {
       cprint(error.message, errorIn: 'sendEmailVerification');
       logEvent('email_verifcation_block',
-          parameter: {userModel.displayName: user.email});
+          parameter: {user.displayName: user.email});
       customSnackBar(
         scaffoldKey,
         error.message,
       );
     });
-  }
-
-  /// `Fetch` user `detail` whoose userId is passed
-  Future<User> getuserDetail(String userId) async {
-    User user;
-    var data =
-        await fsRepo.getFirebaseItem(collectionName: "users", id: userId);
-    if (data != null) {
-      user = User.fromJson(data);
-
-      return user;
-    } else {
-      return null;
-    }
-  }
-
-  /// Fetch user profile
-  /// If `userProfileId` is null then logged in user's profile will fetched
-  Future<void> getProfileUser({String userProfileId}) async{
-    try {
-      loading = true;
-      if (_profileUserModelList == null) {
-        _profileUserModelList = [];
-      }
-      userProfileId = userProfileId == null ? user.uid : userProfileId;
-      var map = await fsRepo.getFirebaseItem(collectionName: "users", id: userId);
-        if (map == null) return;
-          _profileUserModelList.add(User.fromJson(map));
-          if (userProfileId == user.uid) {
-            setUserModel(newUserModel: _profileUserModelList.last);  //  _userModel = _profileUserModelList.last;
-            _userModel.isVerified = user.isEmailVerified;
-            // TODO add back in email ver
-            // if (!user.isEmailVerified) {
-            //   // Check if logged in user verified his email address or not
-            //   reloadUser(); }
-            // if (_userModel.fcmToken == null) {
-            //   updateFCMToken(); }
-          logEvent('get_profile');
-        }
-        loading = false;
-    
-    } catch (error) {
-      loading = false;
-      cprint(error, errorIn: 'getProfileUser');
-    }
-    return;
-  }
-
-  void _onProfileChanged(Map data) {
-    if (data != null) {
-      final updatedUser = User.fromJson(data);
-      if (updatedUser.id == user.uid) {
-        setUserModel(newUserModel:updatedUser);
-        //_userModel = updatedUser;
-      }
-      cprint('User Updated');
-      notifyListeners();
-    }
-  }
-    /// Create user from `google login`
-  /// If user is new then it create a new user
-  /// If user is old then it just `authenticate` user and return firebase user data
-  Future<FirebaseUser> handleGoogleSignIn() async {
-    try {
-      /// Record log in firebase kAnalytics about Google login
-      // kAnalytics.logEvent(eventName: 'google_login');
-      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        throw Exception('Google login cancelled by user');
-      }
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      user = (await _firebaseAuth.signInWithCredential(credential)).user;
-      authStatus = AuthStatus.LOGGED_IN;
-      userId = user.uid;
-      isSignInWithGoogle = true;
-      createUserFromGoogleSignIn(user);
-      notifyListeners();
-      return user;
-    } on PlatformException catch (error) {
-      user = null;
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-      cprint(error, errorIn: 'handleGoogleSignIn');
-      return null;
-    } on Exception catch (error) {
-      user = null;
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-      cprint(error, errorIn: 'handleGoogleSignIn');
-      return null;
-    } catch (error) {
-      user = null;
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-      cprint(error, errorIn: 'handleGoogleSignIn');
-      return null;
-    }
-  }
-
-  /// Create user profile from google login
-  createUserFromGoogleSignIn(FirebaseUser user) {
-    var diff = DateTime.now().difference(user.metadata.creationTime);
-    // Check if user is new or old
-    // If user is new then add new user to firebase realtime kDatabase
-    if (diff < Duration(seconds: 15)) {
-      User model = User(
-        bio: 'Edit profile to update bio',
-        location: 'Somewhere in universe',
-        profilePic: user.photoUrl,
-        displayName: user.displayName,
-        email: user.email,
-        id: user.uid,
-        contact: user.phoneNumber,
-        isVerified: user.isEmailVerified,
-      );
-      createUser(model, isNewUser: true);
-    } else {
-      cprint('Last login at: ${user.metadata.lastSignInTime}');
-    }
   }
     /// Check if user's email is verified
   Future<bool> isEmailVerified() async {
@@ -361,10 +164,211 @@ class AuthState extends BaseState {
 
 }
 
+// /// Alter select auth method, login and sign up page
+  // void openSignUpPage() {
+  //   authStatus = AuthStatus.NOT_LOGGED_IN;
+  //   userId = '';
+  //   notifyListeners();
+  // }
+
+
+    //   UserUpdateInfo updateInfo = UserUpdateInfo();
+    //   updateInfo.displayName = newUserModel.displayName;
+    //   updateInfo.photoUrl = newUserModel.profilePic;
+    //   await result.user.updateProfile(updateInfo);
+    //   setUserModel(newUserModel: newUserModel, id: user.uid);
+    //  // _userModel = userModel; // _userModel.id = user.uid;
+    //   createUser(_userModel, isNewUser: true);
+
+
+  /// `Create` and `Update` user
+  /// IF `newUser` is true new user is created
+  /// Else existing user will update with new values
+  // createUser(User newUserModel, {bool isNewUser = false}) {
+  //   if (isNewUser) {// Create username by the combination of name and id
+  //     newUserModel.userName = getUserName(id: newUserModel.id, name: user.displayName);
+  //     print(newUserModel.userName);//kAnalytics.logEvent('create_newUser',{});// Time at which user is created
+  //     newUserModel.createdAt = DateTime.now().toUtc().toString();
+  //   }
+  //   fsRepo.saveToFirebase(
+  //       collectionName: "users", itemMap: newUserModel.toJson(), id: newUserModel.id);
+  //   setUserModel(newUserModel: newUserModel);
+  //   if (_profileUserModelList != null) {
+  //     _profileUserModelList.last = _userModel;
+  //   }
+  //   loading = false;
+  // }
+
+  //bool _profileQuery = false;
+ // List _profileUserModelList;
+ // User _userModel;//bool _isBusy;
+ // bool get isLoggedIn => _userModel!=null;
+ // User get userModel => _userModel;
+
+  // User get profileUserModel {
+  //   if (_profileUserModelList != null && _profileUserModelList.length > 0) {
+  //     return _profileUserModelList.last;
+  //   } else {
+  //     return null;
+  //   }
+  // }
+
+  // setUserModel({User newUserModel, String id, bool logout=false}){
+  //   if(logout)
+  //     _userModel=null;
+  //   else{
+  //     _userModel=newUserModel;
+  //     if(id!=null)
+  //       _userModel.id= id;
+  //   }
+  // }
+ 
+
+  // void removeLastUser() {
+  //   _profileUserModelList.removeLast();
+  // }
+
+  // /// `Fetch` user `detail` whoose userId is passed
+  // Future<Map> getuserDetail(String userId) async {
+  //   User user;
+  //   var data =
+  //       await fsRepo.getFirebaseItem(collectionName: "users", id: userId);
+  //   if (data != null) {
+  //     user = User.fromJson(data);
+  //     return user;
+  //   } else {
+  //     return null;
+  //   }
+  // }
+
+  // /// Fetch user profile
+  // /// If `userProfileId` is null then logged in user's profile will fetched
+  // Future<void> getProfileUser({String userProfileId}) async{
+  //   try {
+  //     loading = true;
+  //     if (_profileUserModelList == null) {
+  //       _profileUserModelList = [];
+  //     }
+  //     userProfileId = userProfileId == null ? user.uid : userProfileId;
+  //     var map = await fsRepo.getFirebaseItem(collectionName: "users", id: userId);
+  //       if (map == null) return;
+  //         _profileUserModelList.add(User.fromJson(map));
+  //         if (userProfileId == user.uid) {
+  //           setUserModel(newUserModel: _profileUserModelList.last);  //  _userModel = _profileUserModelList.last;
+  //           _userModel.isVerified = user.isEmailVerified;
+  //           // TODO add back in email ver
+  //           // if (!user.isEmailVerified) {
+  //           //   // Check if logged in user verified his email address or not
+  //           //   reloadUser(); }
+  //           // if (_userModel.fcmToken == null) {
+  //           //   updateFCMToken(); }
+  //         logEvent('get_profile');
+  //       }
+  //       loading = false;
+    
+  //   } catch (error) {
+  //     loading = false;
+  //     cprint(error, errorIn: 'getProfileUser');
+  //   }
+  //   return;
+  // }
+
+  // void _onProfileChanged(Map data) {
+  //   if (data != null) {
+  //     final updatedUser = User.fromJson(data);
+  //     if (updatedUser.id == user.uid) {
+  //       setUserModel(newUserModel:updatedUser);
+  //       //_userModel = updatedUser;
+  //     }
+  //     cprint('User Updated');
+  //     notifyListeners();
+  //   }
+  // }
+   
 
 
 
+//  /// Create user from `google login`
+//   /// If user is new then it create a new user
+//   /// If user is old then it just `authenticate` user and return firebase user data
+//   Future<FirebaseUser> handleGoogleSignIn() async {
+//     try {
+//       /// Record log in firebase kAnalytics about Google login
+//       // kAnalytics.logEvent(eventName: 'google_login');
+//       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+//       if (googleUser == null) {
+//         throw Exception('Google login cancelled by user');
+//       }
+//       final GoogleSignInAuthentication googleAuth =
+//           await googleUser.authentication;
 
+//       final AuthCredential credential = GoogleAuthProvider.getCredential(
+//         accessToken: googleAuth.accessToken,
+//         idToken: googleAuth.idToken,
+//       );
+//       user = (await _firebaseAuth.signInWithCredential(credential)).user;
+//       authStatus = AuthStatus.LOGGED_IN;
+//       userId = user.uid;
+//       isSignInWithGoogle = true;
+//       createUserFromGoogleSignIn(user);
+//       notifyListeners();
+//       return user;
+//     } on PlatformException catch (error) {
+//       user = null;
+//       authStatus = AuthStatus.NOT_LOGGED_IN;
+//       cprint(error, errorIn: 'handleGoogleSignIn');
+//       return null;
+//     } on Exception catch (error) {
+//       user = null;
+//       authStatus = AuthStatus.NOT_LOGGED_IN;
+//       cprint(error, errorIn: 'handleGoogleSignIn');
+//       return null;
+//     } catch (error) {
+//       user = null;
+//       authStatus = AuthStatus.NOT_LOGGED_IN;
+//       cprint(error, errorIn: 'handleGoogleSignIn');
+//       return null;
+//     }
+//   }
+
+  // /// Create user profile from google login
+  // createUserFromGoogleSignIn(FirebaseUser user) {
+  //   var diff = DateTime.now().difference(user.metadata.creationTime);
+  //   // Check if user is new or old
+  //   // If user is new then add new user to firebase realtime kDatabase
+  //   if (diff < Duration(seconds: 15)) {
+  //     User model = User(
+  //       bio: 'Edit profile to update bio',
+  //       location: 'Somewhere in universe',
+  //       profilePic: user.photoUrl,
+  //       displayName: user.displayName,
+  //       email: user.email,
+  //       id: user.uid,
+  //       contact: user.phoneNumber,
+  //       isVerified: user.isEmailVerified,
+  //     );
+  //     createUser(model, isNewUser: true);
+  //   } else {
+  //     cprint('Last login at: ${user.metadata.lastSignInTime}');
+  //   }
+  // }
+  
+
+
+  // databaseInit() {
+  //   try {
+  //     if (_profileQuery == false) {
+  //       fsRepo
+  //           .getFirebaseItem(collectionName: "users", id: user.uid)
+  //           .then((map) {
+  //         _profileQuery = map != null;
+  //         _onProfileChanged(map);
+  //       });
+  //     }
+  //   } catch (error) {
+  //     cprint(error, errorIn: 'databaseInit');
+  //   }
+  // }
 
   /// if firebase token not available in profile
   /// Then get token from firebase and save it to profile

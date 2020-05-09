@@ -30,11 +30,12 @@ class _SignInState extends State<SignIn> {
     loader.showLoader(context);
     var isValid = validateCredentials(_scaffoldKey, _email, _password);
     if (isValid) {
-      state.authState.signIn(_email, _password, scaffoldKey: _scaffoldKey).then((status) {
+      state.signIn(_email, _password, scaffoldKey: _scaffoldKey).then((status) {
         if (state.authState.user != null) {
           state.authState.getCurrentUser().whenComplete(
             () {
               loader.hideLoader();
+             // state.currentUser=state.authState.userModel;
              tappedMenuButton(bc, "/profile");});
         } else {
           cprint('Unable to login', errorIn: '_emailLoginButton');
@@ -60,11 +61,11 @@ class _SignInState extends State<SignIn> {
                   padding: const EdgeInsets.all(8.0),
                   child: ListView(children: <Widget>[
                     formTitle("Sign In"),
-                    formDescription("Email:"),
+                    formDescription("Email:", w:w),
                     formEntryField(w: w,
                         labelText: 'Email',hint: 'Enter email',
                         onChange: (val) => setState(() => _email = val)),
-                    formDescription("Password:"),
+                    formDescription("Password:", w:w),
                     formEntryField( w: w,
                         labelText: 'Password',hint: 'Enter password',isPassword: true,
                         onChange: (val) => setState(() => _password = val)),

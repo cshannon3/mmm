@@ -14,7 +14,14 @@ import 'package:uuid/uuid.dart';
 import 'dynamic_parser.dart';
 
 
-double flexW(double w)=>w==null?double.infinity:(w>600.0)?450:w-30.0;
+double flexW(double w){
+  if(w==null)return 0;
+  double maxW=450.0;
+//double minW=300.0;
+  double m = (w>maxW)?((w-maxW)/2):5.0;
+  print(m);
+  return m;
+}
 String generateNewID()=>Uuid().v4();
 
 dynamic safeGet({String key, Map map, dynamic alt}){

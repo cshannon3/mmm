@@ -14,8 +14,7 @@ void main() async {
   await appState.initialize();
   // var dataRepo = locator<DataRepo>();
   // await dataRepo.initializeDummy();
-  //var api = FigmaApiGenerator(BrowserClient(), "44085-6531a416-b1ea-4f24-a649-3031f18a49d0");
-  //print(await api.getFile("02gsUbzP8MwIfSvFBHuil7"));
+
   runApp(AppComponent());
 }
 
@@ -29,6 +28,7 @@ class AppComponent extends StatefulWidget {
 class AppComponentState extends State<AppComponent> {
   AppComponentState() {
     final router = Router();
+    
     Routes.configureRoutes(router);
     Application.router = router;
   }

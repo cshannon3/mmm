@@ -25,6 +25,7 @@ class Routes {
   static String claim = "/claim";
   static String update = "/update";
   static String profile = "/profile";
+  static String aboutUs= "/aboutus";
   static String locations = "/map";
   static dynamic route(){
       return {
@@ -44,6 +45,7 @@ class Routes {
     router.define(claim, handler: claimHandler);
     router.define(update, handler: updateHandler);
     router.define(profile, handler: profileHandler);
+    router.define(aboutUs, handler: aboutUsHandler);
     router.define(locations, handler: locationsRouteHandler);
     router.define(signIn, handler: signInHandler);
     router.define(signUp, handler: signUpHandler);
@@ -70,6 +72,11 @@ var profileHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:ProfilePage(),currentRoute:"/profile");
 });
+var aboutUsHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return RootPage(screen:AboutUsPage(),currentRoute:"/aboutus");
+});
+
 var locationsRouteHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:MapsPage(),currentRoute:"/map");

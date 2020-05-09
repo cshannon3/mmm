@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 // passes down the relavent worksheet to each Custom Collection
 //checks to see if needs to update collections data based on firebase or
 // if needs to show any, updates sheet Gets collections from firebase
-
+// todo avoid infinite recursion 
 class DataRepo {
   final GManager gManager;
   // = GManager(secrets.credentials);
@@ -97,6 +97,7 @@ class DataRepo {
 /*
 Save
 */
+// TODO
  saveModel({@required String collectionName,@required Map map, bool toSheets=true, bool toFirestore=true}){
    // 
    if(collections.containsKey(collectionName)){
@@ -124,14 +125,13 @@ Save
 
   Map _parseFields(Map fields, Map modelData){
     Map res ={};
-    print("parse Fields");
-    print(fields);
-    print(modelData);
+    if(debug){
+      print("parse Fields");
+      print(fields);
+      print(modelData);
+    }
     fields.forEach((fieldName, fieldData) {
       dynamic fieldValue = tryGet(key: fieldName, map: modelData);
-      // print(fieldName);
-      // print(fieldValue);
-      // print(fieldData);
       res[fieldName] = _parseField(fieldData, fieldValue);
     });
     return res;

@@ -18,36 +18,24 @@ class _SignupState extends State<Signup> {
   CustomLoader loader;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var state =  locator<AppState>();
-  String _name;String _email;
-  String _password;String _passwordConfirm;
-  
+  //String _name;String _email;
+  //String _password;String _passwordConfirm;
   
   @override
   void initState() {
     loader = CustomLoader();
+    state.initSignUp();
     super.initState();
   }
 
-  void _googleLogin() {
-    if (state.isbusy) {
-      return;
-    }
-    loader.showLoader(context);
-    state.authState.handleGoogleSignIn().then((status) {
-      // print(status)
-      if (state.authState.user != null) {
-        loader.hideLoader();
-        state.authState.getCurrentUser();
-         tappedMenuButton(context, "/");
-      } else {
-        loader.hideLoader();
-        cprint('Unable to login', errorIn: '_googleLoginButton');
-      }
-    });
-  }
-
+  
 
   void _submitForm() {
+    //  String _name=state.buffer["name"];
+      String _email=state.buffer["email"];
+  String _password=state.buffer["password"];
+  String _passwordConfirm=state.buffer["confirmPassword"];
+  
     if (_email ==null ||_email.isEmpty) {
       customSnackBar(_scaffoldKey, 'Please enter name');
       return;
@@ -68,25 +56,14 @@ class _SignupState extends State<Signup> {
     }
 
     loader.showLoader(context);
-    Random random = new Random();
-    int randomNumber = random.nextInt(8);
-    User user = User(
-      email: _email.toLowerCase(),
-      bio: 'Edit profile to update bio',
-      displayName: _name,
-      location: 'Somewhere in universe',
-      profilePic: dummyProfilePicList[randomNumber],
-      isVerified: false,
-    );
-    state.authState.signUp(
-      user,
-      password: _password,
+
+    state.signUp(
       scaffoldKey: _scaffoldKey,
     ).then((status) { print(status);
     }).whenComplete( () {
         loader.hideLoader();
         if (state.authState.authStatus == AuthStatus.LOGGED_IN) {
-           state.authState.sendEmailVerification(_scaffoldKey);
+           state.authState.sendEmailVerification(scaffoldKey:_scaffoldKey);
            tappedMenuButton(context, "/");
         }
       },
@@ -113,18 +90,18 @@ class _SignupState extends State<Signup> {
                     formDescription("Name:"),
                     formEntryField(w: w,
                         labelText: 'Name',hint: 'Enter name',
-                        onChange: (val) => setState(() => _name = val)),
+                        onChange: (val) => setState(() => state.buffer["name"] = val)),
                     formDescription("Email:"),
                     formEntryField(w: w,
                         labelText: 'Email',hint: 'Enter email',
-                        onChange: (val) => setState(() => _email = val)),
+                        onChange: (val) => setState(() => state.buffer["email"] = val)),
                     formDescription("Password:"),
                     formEntryField(w: w,
                         labelText: 'Password',hint: 'Enter password',isPassword: true,
-                        onChange: (val) => setState(() => _password = val)),
+                        onChange: (val) => setState(() => state.buffer["password"] = val)),
                     formEntryField(w: w,
                         labelText: 'Confirm Password',hint: 'Confirm password',isPassword: true,
-                        onChange: (val) => setState(() => _passwordConfirm = val)),
+                        onChange: (val) => setState(() => state.buffer["confirmPassword"] = val)),
                     altButton(w: w, onPressed: _submitForm, text: "Sign Up")
                     //formSave("Save", onSave:_submitForm)
                   ]))),
@@ -135,5 +112,33 @@ class _SignupState extends State<Signup> {
 
 
 
+    // Random random = new Random();
+    // int randomNumber = random.nextInt(8);
+    // print("HI");
+    // User user = User(
+    //   email: _email.toLowerCase(),
+    //   bio: 'Edit profile to update bio',
+    //   displayName: _name,
+    //   location: 'Somewhere in universe',
+    //   profilePic: dummyProfilePicList[randomNumber],
+    //   isVerified: false,
+    // );
 
+// void _googleLogin() {
+//     if (state.isbusy) {
+//       return;
+//     }
+//     loader.showLoader(context);
+//     state.authState.handleGoogleSignIn().then((status) {
+//       // print(status)
+//       if (state.authState.user != null) {
+//         loader.hideLoader();
+//         state.authState.getCurrentUser();
+//          tappedMenuButton(context, "/");
+//       } else {
+//         loader.hideLoader();
+//         cprint('Unable to login', errorIn: '_googleLoginButton');
+//       }
+//     });
+//   }
 

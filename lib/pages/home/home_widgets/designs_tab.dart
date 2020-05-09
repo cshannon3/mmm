@@ -48,28 +48,31 @@ class _DesignTileState extends State<DesignTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-    child: ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Container(
-        color: Colors.grey[200],
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                  child: CarouselSlider(
-                    options: CarouselOptions(),
-                    items: imageSliders(safeGet(map:widget.designData, key:"resources", alt: []))
-                  )
-                ),
-            ),
-            ListTile(
-              title:Text("Face Shields")
-            )
-          ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        child: Container(
+          color: Colors.grey[200],
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                    child: CarouselSlider(
+                      options: CarouselOptions(),
+                      items: imageSliders(safeGet(map:widget.designData, key:"resources", alt: []))
+                    )
+                  ),
+              ),
+              ListTile(
+                title:Text("Face Shields")
+              )
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
     
   }
   List<Widget> imageSliders(List resources) {
