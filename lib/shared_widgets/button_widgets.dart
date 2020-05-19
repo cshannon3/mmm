@@ -176,60 +176,7 @@ Widget closeIcon({@required Function() onPressed}) => Align(
           icon: Icon(Icons.close), color: Colors.red, onPressed: onPressed).showCursorOnHover.moveUpOnHover,
     );
 
-// /https://www.prusaprinters.org/prints/28352-manta-ray-face-shield-v6-prusa-3dverkstan-remix/comments
 
-// Widget topButton(String name, {Function() onPressed, double fontSize=25.0,double h=50.0, String link=""})=> 
-// MaterialButton(
-//                     height: h,
-//                     minWidth: 80.0,
-//                     onPressed: onPressed,
-//                     //??(link!="")?()=>launch(link):(){},
-//                     color: Colors.orangeAccent,
-//                     textColor: Colors.white,
-//                     shape: RoundedRectangleBorder(
-//                         borderRadius: new BorderRadius.circular(18.0)),
-//                     child: Text(name,
-//                         style:  TextStyle(color: Colors.white, fontSize: fontSize)),
-//              //     ),
-//   );
-
-
-
-// Widget altButton({@required double w, @required Function() onPressed, @required String text})=>
-//     Padding(
-//       padding:  (w==null)?EdgeInsets.all(8.0):
-//         EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-//     child: Container(
-//       width: double.infinity,
-//                 child: FlatButton(
-//                   shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(30)),
-//                   color: Colors.grey[300],
-//                   onPressed: onPressed,
-//                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-//                   child: TitleText(text, color: Colors.black),
-//                 ),
-//               ),
-//       );
-
-// Widget altJButton({@required double w, @required Function() onPressed, @required String text})=>
-//     Padding(
-//       padding:  EdgeInsets.all(8.0),
-//     child: Center(
-//       child: Container(
-//         width: 400.0,
-//         height:50.0,
-//                   child: FlatButton(
-//                     shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(30)),
-//                     color: Colors.grey[300],
-//                     onPressed: onPressed,
-//                   //  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-//                     child: TitleText(text, color: Colors.black),
-//                   ),
-//                 ),
-//     ),
-//       );
 
 Widget googleSignInWidget(
         {@required Function() onTap, double h = 50.0, double w = 120}) =>

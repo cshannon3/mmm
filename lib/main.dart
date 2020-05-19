@@ -11,11 +11,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:delaware_makes/utils/secrets.dart' as secrets;
 void main() async {
-  // From a query
-  //PlacesSearchResponse reponse = await places.searchNearbyWithRadius(new Location(31.0424, 42.421), 500);
-  //PlacesSearchResponse reponse = await places.searchNearbyWithRankby(new Location(31.0424, 42.421), "distance");
-
-  // //WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
     final gmanager = GManager(secrets.credentials);
     var dataRepo = locator<DataRepo>();

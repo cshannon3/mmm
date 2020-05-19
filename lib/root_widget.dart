@@ -132,33 +132,3 @@ class _RootPageState extends State<RootPage> {
     );
   }
 }
-
-    // PlatformInfo platformInfo = locator<PlatformInfo>();
-    // platformInfo.screenSize = s;
-    
- // platformInfo.bodyPadding(widget.screen,),
-   // platformInfo.setOverlay(currentOverlay);
-    // platformInfo.addListener(() {
-    //  if(currentOverlay!=platformInfo.currentType)
-    //   setState(() {
-    //     currentOverlay=platformInfo.currentType;
-    //   });
-    // });
-
-// MaterialButton(
-//                       height: 40.0,
-//                       minWidth: 80.0,
-
-//                       onPressed: () {
-//                         platformInfo.setOverlay("request");
-                    
-//                       },
-//                       color: Colors.orangeAccent,
-//                       textColor: Colors.white,
-//                       shape: RoundedRectangleBorder(
-//                           borderRadius: new BorderRadius.circular(18.0)),
-//                       child: Text("Request",
-//                           style:
-//                               TextStyle(color: Colors.white, fontSize: 20.0)),
-//                     ),
-//                   ),

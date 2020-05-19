@@ -98,35 +98,3 @@ var signUpHandler = Handler(
 });
 
 
-
-
-
-//  static String login = "/login";
-  // static String signIn = "/signIn";
-  // static String signUp = "/signUp";
- // static String request = "/request";
-  //static String claim = "/claim";
- // static String update = "/update";
-
-    //router.define(login, handler: loginHandler);
-    //router.define(request, handler: requestHandler);
-   //router.define(claim, handler: claimHandler);
-
-     //router.define(update, handler: updateHandler);
-
-
-
-
-// var requestHandler = Handler(
-//     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-//   return RootPage(screen:RequestPage(),currentRoute:"/request");
-//     });
-
-// var claimHandler = Handler(
-//     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-//   return RootPage(screen:ClaimsForm(),currentRoute:"/claim");
-//     });
-// var updateHandler = Handler(
-//     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-//   return RootPage(screen:UpdateForm(),currentRoute:"/update");
-//     });

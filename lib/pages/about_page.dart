@@ -12,17 +12,7 @@ class AboutUsPage extends StatelessWidget {
       child:  toListText(
               safeGet(key:"AboutUs", map:state.docsRepo.doc.sections, alt:""))
       
-      // ListView(
-      //   children: <Widget>[
-      //     Container(
-      //       child: toRichText(
-      //         safeGet(key:"AboutUs", map:state.docsRepo.doc.sections, alt:""))
-      //     ),
-      //     SizedBox(
-      //       height:200.0
-      //     )
-      //   ],
-      // ),
+
     );
    
   }

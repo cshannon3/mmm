@@ -134,38 +134,3 @@ class MakerSection extends StatelessWidget {
           url: "https://www.tcr-online.com/v/vspfiles/photos/EYE-8160-2T.jpg"));
 }
 
-
-// Row(
-            //   mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-            //   children: <Widget>[
-            //  //   share(),
-            //   SizedBox(height: 20.0,),
-            //     discover(),
-            // ],),
-
-// var platform = locator<PlatformInfo>();
-//             platform.setOverlay("requestMaterial"); 
-
-
-
-// SizedBox(height: 10.0,),
-//                 Center(
-//                   child: Container(
-//                     width: 300.0,
-//                     child: CallToActionButton(
-//               name: "Join Our Network" ,
-//               onPressed:  (){
-//                               var platform = locator<PlatformInfo>();
-//                               platform.setOverlay("request"); },
-//             ),
-//                   ),
-//                 ),
-//           Container(
-//             width: 300.0,
-//             child: CallToActionButton(
-//                 name: "Request Supplies" ,
-//                 onPressed:  (){
-//                     var platform = locator<PlatformInfo>();
-//                     platform.setOverlay("request"); },
-//               ),
-//           ),

@@ -210,35 +210,3 @@ class _OrgAdminTileState extends State<OrgAdminTile> {
     );
   }
 }
-
-// int _selectedDesignType;
-// List des;
-
-//   des=[];
-//   _selectedDesignType=0;
-//  appState.getItemsWhere("designs",
-//           fieldFilters: {"isOffered": true}).forEach((element) {
-//             String name = safeGet(key: "name", map: element, alt: null);
-//             if(name!=null){
-//               des.add(name);
-//             }
-//           });
-
-//      Container(
-//                        width:200.0,
-//                        child: FormDropDown(
-//                               title: "Select ",
-//                               options: des,
-//                               selectedIndex: _selectedDesignType,
-//                               onChange: (value) {
-//                                 setState(() {
-//                                   _selectedDesignType= value;
-//                                  // appState.buffer["type"] = org[_selectedOrgType];
-//                                 });
-//                               },
-//                             ),
-//                      ),
-//                 Container(width: 100.0,child: formEntryField(
-//                   labelText: "#"
-//                 )),
-//                  IconButton(icon: Icon(Icons.add), onPressed: null),
