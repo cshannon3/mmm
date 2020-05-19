@@ -1,15 +1,15 @@
 
-//import 'package:de_makes_final/models/user.dart';
-import 'package:de_makes_final/apis/firebase/firestore_repo.dart' as fsRepo;
-import 'package:de_makes_final/shared_widgets/shared_widgets.dart';
-import 'package:de_makes_final/state/base_state.dart';
-import 'package:de_makes_final/utils/utils.dart';
+//import 'package:delaware_makes/models/user.dart';
+import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:delaware_makes/state/base_state.dart';
+import 'package:delaware_makes/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 //import 'package:path/path.dart' as Path;
+// TODO add in google signin
 
 class AuthState extends BaseState {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
@@ -22,10 +22,8 @@ class AuthState extends BaseState {
   /// Logout from device
   void logoutCallback() {
     authStatus = AuthStatus.NOT_LOGGED_IN;
-    userId = '';
-    //setUserModel(logout:true);
-    user = null;
-   // _profileUserModelList = null;
+    userId = ''; //setUserModel(logout:true);
+    user = null;// _profileUserModelList = null;
     if (isSignInWithGoogle) {
       _googleSignIn.signOut();
       logEvent('google_logout');
@@ -34,13 +32,56 @@ class AuthState extends BaseState {
     notifyListeners();
   }
 
-  
+ /// Create user from `google login`
+  /// If user is new then it create a new user
+  /// If user is old then it just `authenticate` user and return firebase user data
+  Future<String> handleGoogleSignIn() async {
+    try {
+      /// Record log in firebase kAnalytics about Google login
+      // kAnalytics.logEvent(eventName: 'google_login');
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception('Google login cancelled by user');
+      }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      user = (await _firebaseAuth.signInWithCredential(credential)).user;
+      authStatus = AuthStatus.LOGGED_IN;
+      userId = user.uid;
+      isSignInWithGoogle = true;
+     // createUserFromGoogleSignIn(user);
+      notifyListeners();
+      return user.uid;
+    } on PlatformException catch (error) {
+      user = null;
+      authStatus = AuthStatus.NOT_LOGGED_IN;
+      cprint(error, errorIn: 'handleGoogleSignIn');
+      return null;
+    } on Exception catch (error) {
+      user = null;
+      authStatus = AuthStatus.NOT_LOGGED_IN;
+      cprint(error, errorIn: 'handleGoogleSignIn');
+      return null;
+    } catch (error) {
+      user = null;
+      authStatus = AuthStatus.NOT_LOGGED_IN;
+      cprint(error, errorIn: 'handleGoogleSignIn');
+      return null;
+    }
+  }
+
+  
   /// Verify user's credentials for login
   Future<String> signIn(String email, String password,
       {GlobalKey<ScaffoldState> scaffoldKey}) async {
     try {
       loading = true;
+      
       var result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       user = result.user;
@@ -60,14 +101,16 @@ class AuthState extends BaseState {
   String userEmail,
       {GlobalKey<ScaffoldState> scaffoldKey, String password}) async {
     try {
+      
       loading = true;
-      print("s");
+   //   print("s");
       var result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: userEmail,
-        password: password,
-      );
+        password: password,).catchError((onError){
+          print(onError);
+        });
       user = result.user;
-      print(user.displayName);
+      //print(user);
       authStatus = AuthStatus.LOGGED_IN;  //  kAnalytics.logSignUp(signUpMethod: 'register');
       return user.uid;
     } catch (error) {
@@ -77,8 +120,6 @@ class AuthState extends BaseState {
       return null;
     }
   }
-
-
   /// Fetch current user profile
   Future<FirebaseUser> getCurrentUser() async {
     try {
@@ -106,6 +147,7 @@ class AuthState extends BaseState {
   Future<bool> reloadUser() async {
     await user.reload();
     user = await _firebaseAuth.currentUser();
+    
     if (user.isEmailVerified) {
       
      // userModel.isVerified = true;  // If user verifed his email // Update user in firebase realtime kDatabase
@@ -163,6 +205,9 @@ class AuthState extends BaseState {
   }
 
 }
+
+
+
 
 // /// Alter select auth method, login and sign up page
   // void openSignUpPage() {
@@ -355,20 +400,6 @@ class AuthState extends BaseState {
   
 
 
-  // databaseInit() {
-  //   try {
-  //     if (_profileQuery == false) {
-  //       fsRepo
-  //           .getFirebaseItem(collectionName: "users", id: user.uid)
-  //           .then((map) {
-  //         _profileQuery = map != null;
-  //         _onProfileChanged(map);
-  //       });
-  //     }
-  //   } catch (error) {
-  //     cprint(error, errorIn: 'databaseInit');
-  //   }
-  // }
 
   /// if firebase token not available in profile
   /// Then get token from firebase and save it to profile
@@ -409,70 +440,4 @@ class AuthState extends BaseState {
   //   } catch (error) {
   //     cprint(error, errorIn: 'updateUserProfile');
   //   }
-  // }
-// /// Follow / Unfollow user
-// ///
-// /// If `removeFollower` is true then remove user from follower list
-// ///
-// /// If `removeFollower` is false then add user to follower list
-// followUser({bool removeFollower = false}) {
-//   /// `userModel` is user who is looged-in app.
-//   /// `profileUserModel` is user whoose profile is open in app.
-//   try {
-//     if (removeFollower) {
-//       /// If logged-in user `alredy follow `profile user then
-//       /// 1.Remove logged-in user from profile user's `follower` list
-//       /// 2.Remove profile user from logged-in user's `following` list
-//       profileUserModel.followersList.remove(userModel.id);
-
-//       /// Remove profile user from logged-in user's following list
-//       userModel.followingList.remove(profileUserModel.id);
-//       cprint('user removed from following list', event: 'remove_follow');
-//     } else {
-//       /// if logged in user is `not following` profile user then
-//       /// 1.Add logged in user to profile user's `follower` list
-//       /// 2. Add profile user to logged in user's `following` list
-//       if (profileUserModel.followersList == null) {
-//         profileUserModel.followersList = [];
-//       }
-//       profileUserModel.followersList.add(userModel.id);
-//       // Adding profile user to logged-in user's following list
-//       if (userModel.followingList == null) {
-//         userModel.followingList = [];
-//       }
-//       userModel.followingList.add(profileUserModel.id);
-//     }
-//     // update profile user's user follower count
-//     profileUserModel.followers = profileUserModel.followersList.length;
-//     // update logged-in user's following count
-//     userModel.following = userModel.followingList.length;
-
-//   //  kDatabase
-//         // .child('profile')
-//         // .child(profileUserModel.userId)
-//         // .child('followerList')
-//         // .set(profileUserModel.followersList);
-//         fsRepo.updateField(documentPath: 'users/${profileUserModel.id}', fieldName: 'followerList', newValue: profileUserModel.followersList);
-//         fsRepo.updateField(documentPath: 'users/${userModel.id}', fieldName: 'followingList', newValue: profileUserModel.followingList);
-
-//   // //  kDatabase
-//   //       .child('profile')
-//   //       .child(userModel.userId)
-//   //       .child('followingList')
-//   //       .set(userModel.followingList);
-//     cprint('user added to following list', event: 'add_follow');
-//     notifyListeners();
-//   } catch (error) {
-//     cprint(error, errorIn: 'followUser');
-//   }
-// }
-
-/// Trigger when logged-in user's profile change or updated
-/// Firebase event callback for profile update
-
-
-  // bool get isbusy => _isBusy??false;
-  // set loading(bool value) {
-  //   _isBusy = value;
-  //   notifyListeners();
   // }

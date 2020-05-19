@@ -1,21 +1,30 @@
-import 'package:de_makes_final/overlays/overlays.dart';
+
+import 'package:delaware_makes/service_locator.dart';
+import 'package:delaware_makes/state/app_state.dart';
+import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
-//, this.profileId
-
-
 class AboutUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //var state =  locator<AuthState>();
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color:Colors.green,
-      child: Column(
-        children: [
-          Text("state.userModel.displayName"),
-          Expanded(child: UpdateForm(),)
-        ],
-      ));
+    AppState state =  locator<AppState>();
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 40.0),
+      child:  toListText(
+              safeGet(key:"AboutUs", map:state.docsRepo.doc.sections, alt:""))
+      
+      // ListView(
+      //   children: <Widget>[
+      //     Container(
+      //       child: toRichText(
+      //         safeGet(key:"AboutUs", map:state.docsRepo.doc.sections, alt:""))
+      //     ),
+      //     SizedBox(
+      //       height:200.0
+      //     )
+      //   ],
+      // ),
+    );
+   
   }
 }
+

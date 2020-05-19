@@ -1,116 +1,281 @@
-import 'dart:math';
-import 'package:de_makes_final/models/user.dart';
-import 'package:de_makes_final/routes.dart';
-import 'package:de_makes_final/service_locator.dart';
-import 'package:de_makes_final/shared_widgets/shared_widgets.dart';
-import 'package:de_makes_final/state/app_state.dart';
-import 'package:de_makes_final/state/auth_state.dart';
-import 'package:de_makes_final/utils/utils.dart';
+
+import 'package:delaware_makes/routes.dart';
+import 'package:delaware_makes/service_locator.dart';
+import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:delaware_makes/state/app_state.dart';
+import 'package:delaware_makes/state/platform_state.dart';
+import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:delaware_makes/extensions/hover_extension.dart';
+
+
 
 class Signup extends StatefulWidget {
   const Signup({Key key,}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _SignupState();
 }
-
 class _SignupState extends State<Signup> {
   CustomLoader loader;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var state =  locator<AppState>();
-  //String _name;String _email;
-  //String _password;String _passwordConfirm;
+    var platformInfo = locator<PlatformInfo>();
+  String _password;String _passwordConfirm;
+
+  List screens = [false, false];//, false];
+  List icons = [  Icons.person_outline, Icons.lock];//,Icons.verified_user,];
+  List screenWidgets;
+  int currentScreenNum = 0;
+  var _userKey = GlobalKey<FormState>();
+  var _passwordKey = GlobalKey<FormState>();
   
   @override
   void initState() {
     loader = CustomLoader();
     state.initSignUp();
+ 
     super.initState();
   }
+  Widget userInfoForm()=>Form(
+    key:_userKey,
+    child: Column(children: <Widget>[
+                          formTitle("Sign Up"),
+                      formDescription("Name:"),
+                      formEntryField(
+                        initVal: state.buffer["name"],
+                          labelText: 'Name',hint: 'Enter name',
+                          onChange: (val) => setState(() => state.buffer["name"] = val)),
+                      formDescription("Email:"),
+                      formEntryField(
+                        validator:(val)=>!validateEmail(val)?'Please enter email correctly':null,
+                        initVal:state.buffer["email"] ,
+                          labelText: 'Email',hint: 'Enter email',
+                          onChange: (val) => setState(() => state.buffer["email"] = val)),
+                                   Expanded(child: Container(),),
+          MaterialButton(
+              hoverColor: Colors.white,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              color: Colors.grey[200],
+              onPressed: () {
+              if (_userKey.currentState.validate()) {
+                  _userKey.currentState.save();
+                  setState(() {
+                  screens[0] = true;
+                  currentScreenNum += 1;
+                }); 
+                }
+              },
+              child: Text("Next")).showCursorOnHover.moveUpOnHover,
+               SizedBox(
+          height:10.0,
+        ),
+    ],),
+  );
 
   
+  Widget passwordForm()=>Form(
+    key: _passwordKey,
+    child: Column(children: <Widget>[
+                          formDescription("Password:"),
+                      formEntryField(
+                          labelText: 'Password',hint: 'Enter password',isPassword: true,
+                          onChange: (val) => setState(() => _password = val)),
+
+                    formDescription("Confirm Password:"),
+                      formEntryField(
+                        validator: (val) =>val!=_password?"Password Doesn't Match":null,
+                          labelText: 'Confirm Password',hint: 'Confirm password',isPassword: true,
+                          onChange: (val) => setState(() => _passwordConfirm = val)),
+                          
+                            Expanded(child: Container(),),
+                              MaterialButton(
+              hoverColor: Colors.white,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              color: Colors.grey[200],
+              onPressed: () {
+                if (_passwordKey.currentState.validate()) {
+                  _passwordKey.currentState.save();
+                 _submitForm();
+                }
+              },
+              child: Text("Submit")).showCursorOnHover.moveUpOnHover,
+               SizedBox(
+          height:10.0,
+        ),
+    ]),
+  );
+    
+
+    Widget padForm(Widget widget, {double h = 400}) => Center(
+      child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          ),
+          width: 400.0,
+          height: h,
+          child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              child: widget)));
 
   void _submitForm() {
-    //  String _name=state.buffer["name"];
-      String _email=state.buffer["email"];
-  String _password=state.buffer["password"];
-  String _passwordConfirm=state.buffer["confirmPassword"];
-  
-    if (_email ==null ||_email.isEmpty) {
-      customSnackBar(_scaffoldKey, 'Please enter name');
-      return;
-    }
-    if (_email.length > 27) {
-      customSnackBar(_scaffoldKey, 'Name length cannot exceed 27 character');
-      return;
-    }
-    if (_email == null || _email.isEmpty ||
-        _password == null ||  _password.isEmpty ||
-        _passwordConfirm == null) {
-      customSnackBar(_scaffoldKey, 'Please fill form carefully');
-      return;
-    } else if (_password != _passwordConfirm) {
-      customSnackBar(
-          _scaffoldKey, 'Password and confirm password did not match');
-      return;
-    }
-
+    
     loader.showLoader(context);
-
     state.signUp(
+      password: _password,
       scaffoldKey: _scaffoldKey,
     ).then((status) { print(status);
     }).whenComplete( () {
         loader.hideLoader();
         if (state.authState.authStatus == AuthStatus.LOGGED_IN) {
            state.authState.sendEmailVerification(scaffoldKey:_scaffoldKey);
-           tappedMenuButton(context, "/");
+           state.userProfileData=state.currentUser;
+           tappedMenuButton(context, "/profile");
         }
       },
     );
   }
+    Widget iconButton(int itemNum){
+        bool current = itemNum==currentScreenNum;
+        bool done = screens[itemNum];
+      return  Container(
+          decoration: BoxDecoration(
+          border: Border.all(color:current?Colors.blue:done?Colors.green:Colors.grey, width: 2.0),
+            shape:BoxShape.circle
+            ),
+          child: Padding(
+            padding: EdgeInsets.all(3.0),
+            child: IconButton(
+              onPressed: (){
+                bool isAvailable=true;
+                for (int i = 0;i<itemNum; i++){
+                  if(!screens[i])isAvailable=false;
+                }
+                if(isAvailable)
+                setState(() {
+                  currentScreenNum=itemNum;
+                });
+              },
+              icon: Icon(icons[itemNum], color: done?Colors.green:Colors.grey,)),
+          )).showCursorOnHover.moveUpOnHover;
+  }   
+
+
+  Widget progressRow()=>Container(
+       decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.9),
+            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+          ),
+    width: 400.0,
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          iconButton(0),
+          iconButton(1),
+         // iconButton(2),
+        ],
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: Colors.white,
-        ),
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        child: Stack(children: <Widget>[
-          Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView(children: <Widget>[
-                    formTitle("Sign Up"),
-                    formDescription("Name:"),
-                    formEntryField(w: w,
-                        labelText: 'Name',hint: 'Enter name',
-                        onChange: (val) => setState(() => state.buffer["name"] = val)),
-                    formDescription("Email:"),
-                    formEntryField(w: w,
-                        labelText: 'Email',hint: 'Enter email',
-                        onChange: (val) => setState(() => state.buffer["email"] = val)),
-                    formDescription("Password:"),
-                    formEntryField(w: w,
-                        labelText: 'Password',hint: 'Enter password',isPassword: true,
-                        onChange: (val) => setState(() => state.buffer["password"] = val)),
-                    formEntryField(w: w,
-                        labelText: 'Confirm Password',hint: 'Confirm password',isPassword: true,
-                        onChange: (val) => setState(() => state.buffer["confirmPassword"] = val)),
-                    altButton(w: w, onPressed: _submitForm, text: "Sign Up")
-                    //formSave("Save", onSave:_submitForm)
-                  ]))),
-          closeIcon(onPressed: null)
-        ]));
+       screenWidgets = [
+      padForm(userInfoForm(),  h: 450.0),
+      padForm(passwordForm(),  h: 350.0),
+    //  padForm(verifyCheck()),
+     
+    ];
+    return SafeArea(
+      child: Container(
+      width: 400.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+           progressRow(),
+            SizedBox(
+    height: 10.0,
+      ),
+            screenWidgets[currentScreenNum]
+        ]),
+    ));
   }
 }
 
+  // Widget verifyCheck()=>Column(children: <Widget>[
+  //     MaterialButton(
+  //             hoverColor: Colors.white,
+  //             shape:
+  //                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+  //             color: Colors.grey[200],
+  //             onPressed: () {
+  //             _submitForm();
+  //             },
+  //             child: Text("Submit")),
+  // ]);
 
+    //   Container(
+    //     width: 400.0,
+    //     //height:400.0,
+    //      decoration: BoxDecoration(
+    //         color: Colors.white,
+    //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    //       ),
+    //        child: Padding(
+    //               padding: const EdgeInsets.all(8.0),
+    //               child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     crossAxisAlignment: CrossAxisAlignment.center,
+    //     children: [
+    //        progressRow(),
+    //         SizedBox(
+    // height: 10.0,
+    //   ),
+    //         screenWidgets[currentScreenNum]
+    //     ]),
+    //   )));
+
+  // ListView(children: <Widget>[
+               
+  //                   formTitle("Sign Up"),
+  //                   formDescription("Name:"),
+  //                   formEntryField(w: w,
+  //                       labelText: 'Name',hint: 'Enter name',
+  //                       onChange: (val) => setState(() => state.buffer["name"] = val)),
+  //                   formDescription("Email:"),
+  //                   formEntryField(w: w,
+  //                       labelText: 'Email',hint: 'Enter email',
+  //                       onChange: (val) => setState(() => state.buffer["email"] = val)),
+  //                   formDescription("Password:"),
+  //                   formEntryField(w: w,
+  //                       labelText: 'Password',hint: 'Enter password',isPassword: true,
+  //                       onChange: (val) => setState(() => _password = val)),
+  //                   formEntryField(w: w,
+  //                       labelText: 'Confirm Password',hint: 'Confirm password',isPassword: true,
+  //                       onChange: (val) => setState(() => _passwordConfirm = val)),
+  //                   altButton(w: w, onPressed: _submitForm, text: "Sign Up")
+  //                   //formSave("Save", onSave:_submitForm)
+  //                 ])
+
+
+
+
+
+//   Future<void> _handleSignIn() async {
+//     print("HO");
+//     GoogleSignIn _googleSignIn = GoogleSignIn();
+//   try {
+//     await _googleSignIn.signIn();
+//   } catch (error) {
+//     print(error);
+//   }
+// }
 
     // Random random = new Random();
     // int randomNumber = random.nextInt(8);

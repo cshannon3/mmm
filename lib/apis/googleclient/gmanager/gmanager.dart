@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:de_makes_final/apis/googleclient/gmanager/gdocs.dart';
-import 'package:de_makes_final/apis/googleclient/gmanager/gsheets.dart';
+import 'package:delaware_makes/apis/googleclient/gmanager/gdocs.dart';
+import 'package:delaware_makes/apis/googleclient/gmanager/gsheets.dart';
 import 'package:googleapis/drive/v2.dart' as drive;
 import 'package:googleapis/docs/v1.dart' as docs;
 import 'package:googleapis/sheets/v4.dart' as v4;
@@ -13,7 +13,7 @@ import '../requests.dart' as req;
 
 //final scopes = [drive.DriveApi.DriveScope, docs.DocsApi.DocumentsScope ];
 const _sheetsEndpoint = 'https://sheets.googleapis.com/v4/spreadsheets/';
-const _filesEndpoint = 'https://www.googleapis.com/drive/v2/files/';
+//const _filesEndpoint = 'https://www.googleapis.com/drive/v2/files/';
 
 /// [Exception] that throws gsheets.
 
@@ -54,6 +54,7 @@ class GManager {
   Future<GoogleDocInfo> getDocData({String docTitle, String documentId}) async {
     var _url;
     var _body;
+   // print("GET DOC DATA");
     http.Client cl = await client;
     commons.ApiRequester _requester = commons.ApiRequester(
         cl, "https://docs.googleapis.com/", "", 'dart-api-client docs/v1');
@@ -75,10 +76,13 @@ class GManager {
         // TODO Figure Out What I want the Document Model to include and how 
         //I want to connect it to content
     return _response.then((docData) {
-      List<String> txt = parseDataList(data: docData);
-      print(txt);
-      return GoogleDocInfo(
-          docID: documentId, title: docTitle, text: txt[0], sections: txt);
+     // List<String> txt = parseDataList(data: docData);
+     Map<String, dynamic> txt = parseDataList(data: docData);
+    //  print(txt);
+      GoogleDocInfo g = GoogleDocInfo(
+          docID: documentId, title: docTitle, text: txt[0]);
+      g.sections= txt;
+      return g;
     });
     //return await getData(
     //   client: await client, docTitle: docTitle, documentId: documentId);
@@ -132,7 +136,6 @@ class GManager {
         return 'UNFORMATTED_VALUE';
     }
   }
-
   static String _parseInputOption(ValueInputOption option) {
     switch (option) {
       case ValueInputOption.user_entered:

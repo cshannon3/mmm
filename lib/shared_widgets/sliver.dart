@@ -20,7 +20,6 @@ class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return new SizedBox.expand(child: child);
   }
-
   @override
   bool shouldRebuild(SliverAppBarDelegate oldDelegate) {
     return maxHeight != oldDelegate.maxHeight ||
@@ -28,7 +27,6 @@ class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         child != oldDelegate.child;
   }
 }
-
   SliverPersistentHeader makeHeader(Widget child,
       {double width, bool pinned = false, double maxH, double minH}) {
     return SliverPersistentHeader(
@@ -47,32 +45,4 @@ class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       ));
   }
 
-    Widget mainMyTabs({String selected, double width, Map<String, Function()> items}){
-      List<Widget> tabWidgets = [];
-      items.forEach((key, value) {
-        tabWidgets.add(makeTabButton(text:key,active:key==selected, onPressed:value));
-      });
-     return Row( // include on pressed
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: tabWidgets
-            
-            ) ;
-    }
-  Widget makeTabButton({String text,bool active, Function() onPressed})=>Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 40.0,
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                        color: active?Colors.grey[200]:Colors.grey[100],
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15.0),bottomRight: Radius.circular(15.0) ),
-                        border: Border.all(
-                            color: active?Colors.black:Colors.white,
-                            width:active?2.0 : 0.0)),
-                    child: InkWell(
-                        onTap: onPressed,
-                        child: Center(child: Text(text, style: TextStyle(color:active?Colors.black:Colors.grey),))),
-                  ),
-                ),
-              );
+   

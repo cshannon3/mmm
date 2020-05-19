@@ -17,13 +17,15 @@
   <title>de_makes_final</title>
   <link rel="manifest" href="manifest.json">
 </head>
-<body>
+<body id="app-container">
+
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-functions.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-messaging.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-storage.js"></script>
@@ -41,16 +43,16 @@
   <script>
     // Your web app's Firebase configuration
     var firebaseConfig = {
-      apiKey: "AIzaSyBzC--rDxG3VTzePwaV22YTAZCz7af8s1E",
-      authDomain: "twitter-clone3.firebaseapp.com",
-      databaseURL: "https://twitter-clone3.firebaseio.com",
-      projectId: "twitter-clone3",
-      storageBucket: "twitter-clone3.appspot.com",
-      messagingSenderId: "760647737499",
-      appId: "1:760647737499:web:fe06516f984f21da17a63e",
-      measurementId: "G-7ME9L450E6"
-    };
-    // Initialize Firebase
+    apiKey: "AIzaSyAo5EYIc0i9VCBqVl_leCKsMu5o5U93Db0",
+    authDomain: "million-more-makers.firebaseapp.com",
+    databaseURL: "https://million-more-makers.firebaseio.com",
+    projectId: "million-more-makers",
+    storageBucket: "million-more-makers.appspot.com",
+    messagingSenderId: "220847770471",
+    appId: "1:220847770471:web:8e72d93c63ba2925053dc2",
+    measurementId: "G-J60Y6KL543"
+  };
+
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
   </script>

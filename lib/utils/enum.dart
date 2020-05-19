@@ -9,12 +9,6 @@ enum AuthStatus {
   NOT_LOGGED_IN,
   LOGGED_IN,
 }
-enum TweetType{
-  Tweet,
-  Detail,
-  Reply,
-  ParentTweet
-}
 
 enum SortUser{
   ByVerified,
@@ -27,7 +21,6 @@ enum SortUser{
 enum NotificationType{
   NOT_DETERMINED,
   Message,
-  Tweet,
   Reply,
   Retweet,
   Follow,

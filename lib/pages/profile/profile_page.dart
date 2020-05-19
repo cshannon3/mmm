@@ -1,27 +1,370 @@
-
-import 'package:de_makes_final/overlays/overlays.dart';
-import 'package:de_makes_final/service_locator.dart';
-import 'package:de_makes_final/state/auth_state.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:delaware_makes/forms/form_manager.dart';
+import 'package:delaware_makes/routes.dart';
+import 'package:delaware_makes/service_locator.dart';
+import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:delaware_makes/state/app_state.dart';
+import 'package:delaware_makes/state/platform_state.dart';
+import 'package:delaware_makes/utils/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //, this.profileId
-
-
 class ProfilePage extends StatelessWidget {
+  var state = locator<AppState>();
+  PlatformInfo platformInfo=  locator<PlatformInfo>();
+  ProfilePage({Key key, }) : super(key: key);
+
+  List<Widget> updateTiles(List updates) {
+    List<Widget> tiles = [];
+    updates.forEach((element) {
+      tiles.add(Container(
+        height: 100.0,
+        width: 100.0,
+        child: Image.network(element["url"]),
+      ));
+    });
+    return tiles;
+  }
+
+  Widget userInfoWidget(double w, BuildContext context) {
+    return (w < 600)
+        ? Column(children: [
+            CircleAvatar(
+              radius: 100,
+              backgroundImage: Image.network(safeGet(
+                      key: "url",
+                      map: state.getProfileData(),
+                      alt:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*"))
+                  .image,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              safeGet(key: "name", map: state.getProfileData(), alt: ""),
+              textScaleFactor: 4,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              safeGet(key: "bio", map: state.getProfileData(), alt: ""),
+
+              textScaleFactor: 2,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 40,
+            ),
+          ])
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircleAvatar(
+                radius: 100,
+                backgroundImage: Image.network(safeGet(
+                        key: "url",
+                        map: state.getProfileData(),
+                        alt:
+                            "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*"))
+                    .image,
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Column(children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  safeGet(key: "displayName", map: state.getProfileData(), alt: ""),
+                  textScaleFactor: 4,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                 state.isCurrentUser() ? MainUIButton(
+              text:"Sign Out",
+              onPressed: () {
+                state.logout();
+                //platformInfo.setOverlay("");
+                tappedMenuButton(context, "/");
+              },
+              ):SizedBox(
+                  height: 50,
+                ),
+           
+                SizedBox(
+                  height: 40,
+                ),
+              ])
+            ],
+          );
+  }
+
+  Widget claimsList(BuildContext context){
+    List<Widget> clWidget=[];
+    List claims = safeGet(map: state.getProfileData(), key: "claims",alt: []);
+    claims.forEach((cl) {
+     // print(cl);
+     // Map des =state.designs.firstWhere((element) => element["id"]== cl["designID"], orElse: ()=>{});
+    Map des = state.dataRepo.getItemByID("designs", cl["designID"]);
+      Map org = state.dataRepo.getItemByID("orgs", cl["orgID"]);
+     // Map org =state.orgs.firstWhere((element) => element["id"]== cl["orgID"], orElse: ()=>{});
+      String d= safeGet(key: "name", map: des, alt: "design");
+      String o= safeGet(key: "name", map: org, alt: "Organization");
+      clWidget.add(
+        ListTile(
+          leading: IconButton(icon: Icon(FontAwesomeIcons.checkCircle), onPressed: null),
+          title:Text("${cl["quantity"]} $d to $o"),
+          trailing: (state.isCurrentUser() && !safeGet(map: cl, key: "isDone",alt: false))?
+          Container(width:150.0, child: MainUIButton(text:"Update Claim",
+          onPressed: (){
+             var formManager = locator<FormManager>();
+             formManager.initUpdate(claimData:cl);  
+            formManager.setForm("update", resetBuffer: false);
+                    }
+          )):SizedBox(width:20.0)
+          )
+      );
+    });
+    return Column(children: clWidget);
+  }
   @override
   Widget build(BuildContext context) {
-    //var state =  locator<AuthState>();
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color:Colors.green,
-      child: Column(
-        children: [
-          Text("state.userModel.displayName"),
-          Expanded(child: UpdateForm(),)
-        ],
-      ));
+    double w = MediaQuery.of(context).size.width;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0),
+        child: ListView(
+            children: <Widget>[
+          userInfoWidget(w, context),
+          SizedBox(
+            height: 40,
+          ),
+        state.isCurrentUser() ?  MainUIButton(
+             
+              onPressed: () {
+                 var formManager = locator<FormManager>();
+              
+            formManager.setForm("update", );
+                // state.initUpdate();
+                // platformInfo.setOverlay("update");
+               // tappedMenuButton(context, "/update");
+              },
+              text: "New Update"):Container(),
+          TitleText("Claims"),
+          claimsList(context),
+           SizedBox(
+            height: 40,
+          ),
+          TitleText("Updates"),
+                Container(
+          height:500.0,
+          child: GridView.count(
+  crossAxisCount: getColumnNum(w),
+  children: imageSliders(safeGet(
+                            map: state.getProfileData(),
+                            key: "resources",
+                            alt: [])))
+                            )
+        
+        
+          // Container(
+          //   width: 300.0,
+          //   height: 400.0,
+          //   child: UpdatesTile(userData: state.getProfileData(),),
+          // )
+        ]
+        //..addAll(updateTiles(state.getProfileData()["updatesList"] ?? []))),
+      )),
+    );
+  }
+
+ List<Widget> imageSliders(List resources) {
+   // print(resources);
+    List<String> r= ["Image", "Update", "Submission"];
+
+    List<Widget> imgs = [];
+    resources.forEach((resData) {
+      String url = safeGet(key: "url", map: resData, alt: "");
+      String type = safeGet(key: "type", map: resData, alt: "");
+      if (url != "" && r.contains(type)){
+        imgs.add(Container(
+          child: Container(
+            margin: EdgeInsets.all(5.0),
+            child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                child: Stack(
+                  children: <Widget>[
+                    Image.network(url, fit: BoxFit.cover, width: 1000.0),
+                    Positioned(
+                      bottom: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromARGB(200, 0, 0, 0),
+                              Color.fromARGB(0, 0, 0, 0)
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        child: Text(
+                          "",
+                          //safeGet(key:"name", map:resData, alt: ""),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+          ),
+        ));
+      }
+    });
+
+    return imgs;
+  }
+
+}
+
+class UpdatesTile extends StatefulWidget {
+  const UpdatesTile({Key key, @required this.userData})
+      : super(key: key);
+
+  final Map userData;
+
+  @override
+  _DesignTileState createState() => _DesignTileState();
+}
+
+class _DesignTileState extends State<UpdatesTile> {
+  bool isOn = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+          child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        child: Container(
+          color: Colors.grey[200],
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                    child: 
+                    CarouselSlider(
+                        options: CarouselOptions(),
+                        items: imageSliders(safeGet(
+                            map: widget.userData,
+                            key: "resources",
+                            alt: [])))
+                            ),
+              ),
+              ListTile(title: Text("Stats:  "))
+            ],
+          ),
+        ),
+      )),
+    );
+  }
+  List<Widget> imageSliders(List resources) {
+   // print(resources);
+    List<Widget> imgs = [];
+    resources.forEach((resData) {
+      String url = safeGet(key: "url", map: resData, alt: "");
+      if (url != "" && resData["type"]=="Update") {
+        imgs.add(Container(
+          child: Container(
+            margin: EdgeInsets.all(5.0),
+            child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                child: Stack(
+                  children: <Widget>[
+                    Image.network(url, fit: BoxFit.cover, width: 1000.0),
+                    Positioned(
+                      bottom: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromARGB(200, 0, 0, 0),
+                              Color.fromARGB(0, 0, 0, 0)
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        child: Text(
+                          "",
+                          //safeGet(key:"name", map:resData, alt: ""),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+          ),
+        ));
+      }
+    });
+
+    return imgs;
   }
 }
+
+
+
+
+
+
+
+
+     // Text(
+                //   safeGet(key: "bio", map: state.getProfileData(), alt: ""),
+                //   // style: Theme.of(context).textTheme.caption,
+                //   textScaleFactor: 2,
+                //   textAlign: TextAlign.center,
+                // ),
+
+
+
+// class ProfilePage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+
+//     return Container(
+//       height: double.infinity,
+//       width: double.infinity,
+//       child: Column(
+//         children: [
+//           Text(state.getProfileData()["displayName"]),
+
+//           //Expanded(child: UpdateForm(),)
+//         ],
+//       ));
+//   }
+// }
 // class ProfilePage extends StatefulWidget {
 //   ProfilePage({Key key}) : super(key: key);
 
@@ -47,7 +390,6 @@ class ProfilePage extends StatelessWidget {
 //    // _tabController = TabController(length: 3, vsync: this);
 //     super.initState();
 //   }
-
 
 //   SliverAppBar getAppbar() {
 //     return SliverAppBar(
@@ -85,33 +427,32 @@ class ProfilePage extends StatelessWidget {
 //                   ),
 //                   Container(height: 50, color: Colors.black),
 
-
 //                   /// User avatar, message icon, profile edit and follow/following button
 //                   Container(
 //                     alignment: Alignment.bottomLeft,
 //                     child: Row(
 //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                       children: <Widget>[
-                 
+
 //                         Container(
 //                           margin: EdgeInsets.only(top: 60, right: 30),
 //                           child: Row(
 //                             children: <Widget>[
 //                               Container(height: 40),
-                                
+
 //                               SizedBox(width: 10),
-                        
+
 //                              Container(
 //                                   padding: EdgeInsets.symmetric(
 //                                     horizontal: 10,
 //                                     vertical: 5,
 //                                   ),
 //                                   decoration: BoxDecoration(
-//                                     color:// isFollower()? 
+//                                     color:// isFollower()?
 //                                         TwitterColor.dodgetBlue,
 //                                        // : TwitterColor.white,
 //                                     border: Border.all(
-//                                         color:// isMyProfile   ? 
+//                                         color:// isMyProfile   ?
 //                                             Colors.black87.withAlpha(180),
 //                                           //  : Colors.blue,
 //                                         width: 1),
@@ -133,7 +474,7 @@ class ProfilePage extends StatelessWidget {
 //                                     ),
 //                                   ),
 //                                 ),
-                              
+
 //                             ],
 //                           ),
 //                         )
@@ -181,8 +522,7 @@ class ProfilePage extends StatelessWidget {
 
 //       ))),
 //     );
-    
-    
+
 //     // WillPopScope(
 //     //   onWillPop: _onWillPop,
 //     //   child: Scaffold(
@@ -210,13 +550,12 @@ class ProfilePage extends StatelessWidget {
 //     //         ];
 //     //       },
 //     //       body:Container()
-  
+
 //     //     ),
 //     //   ),
 //     // );
 //   }
 
- 
 // }
 
 // class UserNameRowWidget extends StatelessWidget {
@@ -409,7 +748,7 @@ class ProfilePage extends StatelessWidget {
 //                                   //       Radius.circular(20),
 //                                   //     ),
 //                                   //     onPressed: null,
-                                      
+
 //                                   //     child: Container(
 //                                   //       height: 35,
 //                                   //       width: 35,
@@ -446,7 +785,6 @@ class ProfilePage extends StatelessWidget {
 //     //  list = state.feedlist.where((x) => x.userId == id).toList();
 //    // }
 
-
 //   // isFollower() {
 //   //   var authstate = Provider.of<AuthState>(context);
 //   //   if (authstate.profileUserModel.followersList != null &&
@@ -461,9 +799,9 @@ class ProfilePage extends StatelessWidget {
 //   /// This meathod called when user pressed back button
 //   /// When profile page is about to close
 //   /// Maintain minimum user's profile in profile page list
-//   /// 
-//   /// 
-//   /// 
+//   ///
+//   ///
+//   ///
 //                   /// Banner image
 //                   // Padding(
 //                   //   padding: EdgeInsets.only(top: 30),

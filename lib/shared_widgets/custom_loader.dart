@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +49,7 @@ class CustomLoader {
 
   buildLoader(BuildContext context, {Color backgroundColor}) {
     if(backgroundColor == null){
-     backgroundColor = const Color(0xffa8a8a8).withOpacity(.5);
+     backgroundColor = const Color(0xffa8a8a8).withOpacity(.8);
     }
     var height = 150.0;
     return CustomScreenLoader(

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:de_makes_final/apis/googleclient/gmanager/gmanager.dart';
+import 'package:delaware_makes/apis/googleclient/gmanager/gmanager.dart';
 import 'package:googleapis_auth/auth.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:meta/meta.dart';
@@ -825,7 +825,7 @@ class Worksheet {
     return response.statusCode == 200;
   }
 
-  Future<bool> _updateAll({
+  Future<bool> updateAll({
     List<List<dynamic>> values,
     String majorDimension,
     String range,
@@ -1504,7 +1504,7 @@ class WorksheetAsValues {
     check('column', column);
     check('fromRow', fromRow);
     checkValues(values);
-    return _ws._updateAll(
+    return _ws.updateAll(
       values: values,
       range: await _ws._allColumnsRange(column, fromRow, -1, values.length),
       majorDimension: DIMEN_COLUMNS,
@@ -1564,7 +1564,7 @@ class WorksheetAsValues {
     check('row', row);
     check('fromColumn', fromColumn);
     checkValues(values);
-    return _ws._updateAll(
+    return _ws.updateAll(
       values: values,
       range: await _ws._allRowsRange(row, fromColumn, -1, values.length),
       majorDimension: DIMEN_ROWS,

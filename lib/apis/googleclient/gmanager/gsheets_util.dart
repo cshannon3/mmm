@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:de_makes_final/apis/googleclient/old.dart';
+import 'package:delaware_makes/apis/googleclient/old.dart';
 import 'package:http/http.dart';
 
 import 'gsheets.dart';

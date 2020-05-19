@@ -1,49 +1,62 @@
 
 
 
-import 'package:de_makes_final/apis/googleclient/gmanager/checks.dart';
+import 'package:delaware_makes/apis/googleclient/gmanager/checks.dart';
 import 'checks.dart';
 
+String token = "%%";
 class GoogleDocInfo {
   String docID;
   String title;
   String text;
-  List<String> sections=[];
-  GoogleDocInfo({this.docID, this.text, this.title, this.sections});
+ // List<String> sections=[];
+  Map<String, dynamic> sections={};
+  GoogleDocInfo({this.docID, this.text, this.title,});
 }
 
 
-List parseDataList({dynamic data}) {
+Map<String, dynamic>  parseDataList({dynamic data}) {
   var content = checkPath(data, ["body", "content"]);
   if (!content[0]) return null;
-  List<String> out = [""];
+  
+  //List<String> out = [""];
   bool italic = false;
   bool bold = false;
   String fontType = "normal";
+  String currentSection="header";
   //   String fontFamily;
-
+Map<String, dynamic>  out = {};
+out[currentSection]="";
   int fontWeight = 400;
   int fontsize = 10;
   Map<String, int> namedStySize = {
-    "TITLE": 30,
+    "TITLE": 40,
     "NORMAL_TEXT": 18,
-    "HEADING_2": 25,
-    "HEADING_1": 20,
+    "HEADING_2": 30,
+    "HEADING_1": 35,
+    "HEADING_3": 25,
   };
   content[1].forEach((cont) {
-    var sty =
-        checkPath(cont, ["paragraph", "paragraphStyle", "namedStyleType"]);
+    
+    var sty = checkPath(cont, ["paragraph", "paragraphStyle", "namedStyleType"]);
     if (sty[0] && namedStySize[sty[1]] != fontsize) {
       fontsize = namedStySize[sty[1]];
-      out.add("#size$fontsize#"); 
+      //out.add("#size$fontsize#"); 
+      out[currentSection]+="\n#size$fontsize#";
     }
 
+
     var elements = checkPath(cont, ["paragraph", "elements"]);
-    // String nBack = "";
     bool back = false;
     if (elements[0] && elements[1] is List)
       elements[1].forEach((t) {
-        var elemContent = checkPath(t, ["textRun", "content"])[1] ?? "";
+        String elemContent = checkPath(t, ["textRun", "content"])[1] ?? "";
+        if(elemContent[0]=="#"){
+        //  print(elemContent);
+          currentSection=elemContent.substring(1).trim();
+          out[currentSection]="";
+          elemContent="";
+        }
         var textStyle = checkPath(t, ["textRun", "textStyle"]);
         String nFront = "";
         back = false;
@@ -72,7 +85,8 @@ List parseDataList({dynamic data}) {
           }
           var link = checkPath(textStyle, ["link", "url"]);
           if (link[0]) {
-            out.last += "#link${link[1]}#$elemContent#/link#";
+           // out.last += "#link${link[1]}#$elemContent#/link#";
+            out[currentSection] += "#link${link[1]}#$elemContent#/link#";
             // print(link[1]);
             //  nBack="#/link#";
             back = true;
@@ -96,7 +110,8 @@ List parseDataList({dynamic data}) {
         // print(elemContent);
 
         if (!back) {
-          out.last += nFront + elemContent;
+         // out.last += nFront + elemContent;
+         out[currentSection] += nFront + elemContent;
         } // +nBack;nBack = "";}
         //else{out += nFront + elemContent +nBack;}
         //print(out);
@@ -197,6 +212,14 @@ String parseData({dynamic data}) {
   //print(out);
   return out;
 }
+
+
+
+
+
+
+
+
 
 // class GoogleDocInfo {
 //   String docID;

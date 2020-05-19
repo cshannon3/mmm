@@ -1,70 +1,95 @@
-import 'package:de_makes_final/overlays/claims_form.dart';
-import 'package:de_makes_final/overlays/update_form.dart';
-import 'package:de_makes_final/routes.dart';
-import 'package:de_makes_final/service_locator.dart';
-import 'package:de_makes_final/state/app_state.dart';
-import 'package:de_makes_final/state/auth_state.dart';
-import 'package:de_makes_final/utils/utility.dart';
+//import 'package:delaware_makes/overlays/claims_form.dart';
+//import 'package:delaware_makes/overlays/update_form.dart';
+import 'package:delaware_makes/forms/form_manager.dart';
+import 'package:delaware_makes/routes.dart';
+import 'package:delaware_makes/service_locator.dart';//import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:delaware_makes/shared_widgets/button_widgets.dart';
+import 'package:delaware_makes/state/app_state.dart';
+import 'package:delaware_makes/state/platform_state.dart';
+import 'package:delaware_makes/utils/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-Widget bodyPadding({double width = 800.0, Widget screen}) {
-  double centerWidth = (width < 1140.0) ? width - 40.0 : 1100.0;
-  return Container(
-      padding: EdgeInsets.all(20.0),
+class RootPage extends StatefulWidget {
+  final Widget screen;
+  final String currentRoute;
+
+
+  RootPage({Key key, this.screen, this.currentRoute}) : super(key: key);
+
+  @override
+  _RootPageState createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+  AppState appState; // CustomLoader loader;  //List designs;
+  //PlatformInfo platformInfo = locator<PlatformInfo>();// = locator<PlatformInfo>();
+  //String currentOverlay= "root";
+   FormManager formManager;
+  bool isFormActive=false;
+  @override
+  void initState() { // loader = CustomLoader();
+    appState = locator<AppState>();
+    if (!appState.isReady) {
+      appState.getAll(); // print("Hello");
+      appState.addListener(() {
+        if (appState.isReady) {
+          setState(() {});}  });
+    }
+     formManager= locator<FormManager>();
+    formManager.addListener(() {
+      if(isFormActive!=formManager.isActive)
+      setState(() { 
+        isFormActive=formManager.isActive;
+      });
+    });
+    super.initState();
+  }
+
+
+  Widget bodyPadding(Widget screen, Size s) {
+  double centerWidth = (s.width < 1140.0) ? s.width - 40.0 : 1100.0;
+  return Container(//padding: EdgeInsets.all(20.0),
       child: Center(
         child: Container(
             width: centerWidth, height: double.infinity, child: screen),
       ));
 }
-
-
-class RootPage extends StatelessWidget {
-  final Widget screen;
-  final String currentRoute;
-
-  RootPage({Key key, this.screen, this.currentRoute}) : super(key: key);
-
   List<Widget> actionList(BuildContext context) {
-     var state = locator<AppState>();
-    return state.loggedIn
+    return appState.loggedIn
         ? [
-           FlatButton(
+            FlatButton(
+              hoverColor:Colors.white.withOpacity(0.3),
                 onPressed: () {
-                  if ("/profile" != currentRoute)
-                    tappedMenuButton(context, "/profile");
+                  if ("/profile" != widget.currentRoute)
+                  tappedMenuButton(context, "/profile");
                 },
-                child: Text( safeGet(map:state.currentUser, key:"displayName", alt:"").toUpperCase(),
+                child: Text(
+                    safeGet(
+                            map: appState.currentUser,
+                            key: "displayName",
+                            alt: "")
+                        .toUpperCase(),
                     style: TextStyle(color: Colors.white, fontSize: 16.0)))
-
           ]
         : [
-            FlatButton(
-                onPressed: () {
-                  if ("/login" != currentRoute)
-                    tappedMenuButton(context, "/login");
-                },
-                child: Text("LOGIN",
-                    style: TextStyle(color: Colors.white, fontSize: 16.0)))
+          MenuButton(name: "LOGIN", onPressed:() {
+                 tappedMenuButton(context, "/login"); //platformInfo.setOverlay("login");//TODO 
+                }),
           ];
   }
 
-  Widget menuButton(BuildContext context, String name, String route) =>
-      FlatButton(
-          onPressed: () {
-            if (route != currentRoute) tappedMenuButton(context, route);
-          },
-          child: Text(
-            name,
-            style: TextStyle(color: Colors.white),
-          ));
+  menuButtonClicked(BuildContext context, String route) {  if (route != widget.currentRoute)tappedMenuButton(context, route); }
 
+ //onMenuClicked()=>(route != widget.currentRoute ){  tappedMenuButton(context, route);  }
   appbar(BuildContext context, String currentRoute) => AppBar(
         backgroundColor: Colors.black,
         leading: Container(),
         title: InkWell(
-          onTap: () {},
+          onTap: () { tappedMenuButton(context, "/"); },
           child: Text("DE Makes",
-              style: TextStyle(color: Colors.white, fontSize: 30.0)),
+              style: GoogleFonts.merriweather(
+                  textStyle: TextStyle(color: Colors.white, fontSize: 30.0))),
         ),
         actions: actionList(context),
         bottom: PreferredSize(
@@ -75,30 +100,14 @@ class RootPage extends StatelessWidget {
               height: 48.0,
               child: Row(
                 children: <Widget>[
-                  menuButton(context, "Home", "/"),
-                  menuButton(context, "Locations", "/map"),
-                  menuButton(context, "About Us", "/aboutus"),
+                  MenuButton(name: "Home", onPressed: ()=>menuButtonClicked(context, "/")),
+                  MenuButton(name: "Locations", onPressed: ()=>menuButtonClicked(context, "/map")),
+                  MenuButton(name: "About Us", onPressed: ()=>menuButtonClicked(context, "/aboutus")),
+                  MenuButton(name: "Resources", onPressed: ()=>menuButtonClicked(context, "/designs")),
                   Expanded(
                     child: Container(),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: MaterialButton(
-                      height: 40.0,
-                      minWidth: 80.0,
-                      onPressed: () {
-                     //   launch("https://forms.gle/DBqWCo3oYw1drCc37");
-                           tappedMenuButton(context, "/request");
-                      },
-                      color: Colors.orangeAccent,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(18.0)),
-                      child: Text("Request",
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 20.0)),
-                    ),
-                  ),
+                 
                 ],
               ),
             ),
@@ -106,162 +115,50 @@ class RootPage extends StatelessWidget {
         ),
       );
 
- 
-
   @override
   Widget build(BuildContext context) {
-     var state = locator<AppState>();
-    Size s = MediaQuery.of(context).size;
-    return 
-    Scaffold(
-      appBar: appbar(context,currentRoute),
-      body: //state.isbusy? Center(child:CircularProgressIndicator()):
-      Stack(
-        children: [
-          bodyPadding(width: s.width, screen: screen),
-          state.overlay=="claim"?ClaimsForm():   // s:overlay
-          state.overlay=="update"?UpdateForm():
-          Container()  
-        ],
-      ),
+    Size s =  MediaQuery.of(context).size;
+
+    return Scaffold(
+      appBar: appbar(context, widget.currentRoute),
+      body: (!appState.isReady)
+          ? Center(child: CircularProgressIndicator())
+          : Stack(
+            children: <Widget>[
+              bodyPadding(widget.screen, s),
+              formManager.getOverlay()
+            ],
+          ),
     );
   }
 }
 
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Text(
-            //     state.authState.userModel.displayName,
-            //     style: TextStyle(color: Colors.white),
-            //   ),
-            // )
- // s)overlay
-        //  state.overlay=="request"?overlay(RequestsP, s):
+    // PlatformInfo platformInfo = locator<PlatformInfo>();
+    // platformInfo.screenSize = s;
+    
+ // platformInfo.bodyPadding(widget.screen,),
+   // platformInfo.setOverlay(currentOverlay);
+    // platformInfo.addListener(() {
+    //  if(currentOverlay!=platformInfo.currentType)
+    //   setState(() {
+    //     currentOverlay=platformInfo.currentType;
+    //   });
+    // });
 
-          // Overlay
+// MaterialButton(
+//                       height: 40.0,
+//                       minWidth: 80.0,
 
-   // Widget overlay(Widget overlayWidget, Size s){
-    //   return Container(
-    //     child: Center(
-    //       child: FractionallySizedBox(
-
-    //       ),
-    //     ),
-    //   );
-    // }
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   state = locator<AuthState>();
-  //   busyStatus=state.isbusy;
-  //   super.initState();
-  //   state.addListener(() {
-  //     print("state");
-  //     if(state.isbusy!=busyStatus){
-  //       busyStatus=state.isbusy;
-  //    // print(state.userModel.displayName);
-  //     setState(() {});
-  //     }
-  //   });
-  // }
-
-
-// Spacer(),
-// Expanded(
-//   child: Container(),
-// ),
-// Padding(
-//     padding: EdgeInsets.symmetric(horizontal: 20.0),
-//     child: topButton("Request", h: 40,
-//     onPressed: () {
-//       launch(
-//           "https://forms.gle/DBqWCo3oYw1drCc37"); //   tappedMenuButton(context, "/request");
-//     })),
-
-// FlatButton(
-//     onPressed: () {
-//       if ("/map" != currentRoute)
-//         tappedMenuButton(context, "/map");
-//     },
-//     child: Text(
-//       "Map",
-//       style: TextStyle(color: Colors.white),
-//     )),
-
-// FlatButton(
-//     onPressed: () {
-//       if ("/" != currentRoute) tappedMenuButton(context, "/");
-//     },
-//     child: Text(
-//       "Home",
-//       style: TextStyle(color: Colors.white),
-//     )),
-// AppBar appbar(BuildContext context, String currentRoute)=> AppBar(
-//         backgroundColor: Colors.black,
-//         //title: //Component1(),
-//         title: InkWell(
-//           onTap: () {
-
-//           },
-//           child: Text("DE Makes",
-//               style: GoogleFonts.merriweather(
-//                   textStyle: TextStyle(color: Colors.white, fontSize: 30.0))),
-//         ),
-//         actions: <Widget>[
-//         FlatButton( onPressed:(){if("/login"!=currentRoute)tappedMenuButton(context, "/login");},
-//          child: Text("LOGIN",
-//               style: GoogleFonts.merriweather(
-//                   textStyle: TextStyle(color: Colors.white, fontSize: 16.0)))
-//         )
-//         ],
-//         bottom: PreferredSize(
-//           preferredSize: const Size.fromHeight(48.0),
-//           child: Theme(
-//             data: Theme.of(context).copyWith(accentColor: Colors.white),
-//             child: Container(
-//               height: 48.0,
-//               child: Row(
-//                 children: <Widget>[
-//                 FlatButton(onPressed:(){if("/"!=currentRoute)tappedMenuButton(context, "/");},
-//                  child: Text("Home", style: TextStyle(color:Colors.white),)),
-
-//                    FlatButton(onPressed:(){ if("/map"!=currentRoute)tappedMenuButton(context, "/map");},
-//                  child: Text("Map", style: TextStyle(color:Colors.white),)),
-//               Expanded(child: Container(),),
-//               Padding(
-//                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//                 child: MaterialButton(
-//                           height: 40.0,
-//                           minWidth: 80.0,
-//                           onPressed: (){
-//                             launch("https://forms.gle/DBqWCo3oYw1drCc37");
-//                          //   tappedMenuButton(context, "/request");
-//                             },
-//                           color: Colors.orangeAccent,
-//                           textColor: Colors.white,
-//                           shape: RoundedRectangleBorder(
-//                               borderRadius: new BorderRadius.circular(18.0)),
-//                           child: Text("Request",
-//                               style:  TextStyle(color: Colors.white, fontSize: 20.0)),
-//                         ),
-//               ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//       );
-
-//  MaterialButton(
-//           height: 40.0,
-//           minWidth: 80.0,
-//           onPressed: (){
-//             launch("https://forms.gle/DBqWCo3oYw1drCc37");  //   tappedMenuButton(context, "/request");
-//             },
-//           color: Colors.orangeAccent,
-//           textColor: Colors.white,
-//           shape: RoundedRectangleBorder(
-//               borderRadius: new BorderRadius.circular(18.0)),
-//           child: Text("Request",
-//               style:  TextStyle(color: Colors.white, fontSize: 20.0)),
-//         ),
+//                       onPressed: () {
+//                         platformInfo.setOverlay("request");
+                    
+//                       },
+//                       color: Colors.orangeAccent,
+//                       textColor: Colors.white,
+//                       shape: RoundedRectangleBorder(
+//                           borderRadius: new BorderRadius.circular(18.0)),
+//                       child: Text("Request",
+//                           style:
+//                               TextStyle(color: Colors.white, fontSize: 20.0)),
+//                     ),
+//                   ),

@@ -1,500 +1,361 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:de_makes_final/apis/googleclient/gmanager/gmanager.dart';
-import 'package:de_makes_final/apis/googleclient/gmanager/gsheets.dart' as g;
-import 'package:de_makes_final/dummy_data.dart';
-import 'package:de_makes_final/utils/secrets.dart' as secrets;
-import 'package:de_makes_final/utils/utility.dart';
-import 'package:de_makes_final/utils/utils.dart';
+import 'package:delaware_makes/apis/googleclient/gmanager/gmanager.dart';
+import 'package:delaware_makes/apis/googleclient/gmanager/gsheets_util.dart';
+//import 'package:delaware_makes/utils/constant.dart';
+import 'package:delaware_makes/utils/secrets.dart' as secrets;
+import 'package:delaware_makes/utils/utility.dart';
 import 'package:flutter/material.dart';
+
+import 'package:delaware_makes/apis/googleclient/gmanager/gsheets.dart' as g;
+import 'package:delaware_makes/utils/utils.dart';
+
 
 // Data Repo Grabs the Google Sheet of interest,
 // Gets the collections data from firebase
 // passes down the relavent worksheet to each Custom Collection
 //checks to see if needs to update collections data based on firebase or
 // if needs to show any, updates sheet Gets collections from firebase
-// todo avoid infinite recursion 
+// todo avoid infinite recursion
+
 class DataRepo {
-  final GManager gManager;
-  // = GManager(secrets.credentials);
-  DataRepo(this.gManager);
+  //final
+   GManager gManager; // = GManager(secrets.credentials);
+  DataRepo();
   g.Spreadsheet ss;
   Map<String, dynamic> collections = {};
+  Map<String, bool> colCount = {};
+  Firestore _db;
+  bool hasDesigns = false;
 
-  initialize({bool updateFromSheet = false}) async {
-    print("start");
-    // Gets spreadsheet
-    ss = await gManager.spreadsheet(secrets.spreadsheetId);
-    // Get collections
+  Future<String> initialize({bool updateFromSheet = false,@required GManager gmanager}) async {
+    gManager = gmanager;
+    print("start"); // Gets spreadsheet
+     _db = Firestore.instance;
+
+    ss = await gManager.spreadsheet(secrets.spreadsheetId); // Get collections
+    await loadMetadata();
+    return "";
+  }
+
+  bool collectionExists(String col) => collections.containsKey(col);
+  Map getModels(String collectionName) =>collectionExists(collectionName)?collections[collectionName]["models"]:{};
+  //Map getModel(String collectionName, String modelID)=>checkPath(var map, List path)
+
+  loadMetadata() async {
+    colCount = {};
     Firestore.instance.collection("metadata").snapshots().listen((onData) {
       onData.documents.forEach((dataItem) {
         if (dataItem.data != null) {
-          print(dataItem.data);
-          var map = dataItem.data;
-          if (map["active"]) {
-            // Set spreadsheet to collection//  CustomCollection newCollection = CustomCollection.fromJson(map);
-            var newCollection = map;
-            newCollection["sheet"] = ss.worksheetByTitle(map["sheetName"]);  // newCollection.initialize(updateFromSheet);
-            loadFieldsFromSheet(newCollection);
-            collections[newCollection["collectionName"]] = (newCollection);
-          }
+          Map<String, dynamic> map = dataItem.data;
+          collections[map["collectionName"]] = map;
+          collections[map["collectionName"]]["models"] = {}; //  print(collections[map["collectionName"]]);
+          loadFromFirebase(map["collectionName"]); // colCount[c]=true;
         }
       });
     });
   }
 
-  initializeDummy({bool updateFromSheet = false}) async {
-    print("start");
-    collections = dummyCollections;
-    // Gets spreadsheet
-  }
-
-  loadFieldsFromSheet(Map c) async {
-    var v = await c["sheet"].values.allColumns(fromColumn: 2, length: 5);
-    for (int i = 1; i < v.length; i++) {
-      print(v[i]);
-    }
-  }
-
-  // // GETTERS
-  // dynamic getVal(String collectionName, String modelID, String fieldName,
-  //     {String linkedFieldName}) {
-  //   return _parseField(_getField(collectionName, modelID, fieldName),
-  //       linkedFieldName: linkedFieldName);
-  // }
-
-
-  Map getModelData(String collectionName, String modelID) {
-    Map res = {};
-    //CustomCollection
-    Map c = _getCollection(collectionName);
-    if (c == null) return res;
-    if(debug){
-      print("get model data, collection $collectionName, modelID: $modelID");
-    }
-    res = _parseFields(c["fields"], c["models"][modelID]);
-    if(debug)print(res);
-    return res;
-  }
-
-
-  List getModelsData(String collectionName) {
-    if(debug)print("get $collectionName model ids");
-    Map c = _getCollection(collectionName);
-    if (c == null || !c.containsKey("models") || c["models"] == null) return [];
-    if(debug)print(c["models"]);//.values.toList());//  List m= c["models"].values.toList();
-    List out=[];
-    c["models"].forEach((modelID, v) {
-      print(modelID);
-      out.add(_parseFields(c["fields"], v));
-      // out.add(getModelData(collectionName, modelID));
-     // out.add(getModelData(collectionName, modelID));
+  loadCollectionsFromFirebase() async {
+    colCount = {};
+    collections.forEach((collectionName, collectionData) async {
+      await loadFromFirebase(collectionName);
     });
-    return out;
-    //c["models"].values.toList();
   }
 
-
-/*
-Save
-*/
-// TODO
- saveModel({@required String collectionName,@required Map map, bool toSheets=true, bool toFirestore=true}){
-   // 
-   if(collections.containsKey(collectionName)){
-
-   }
- }
-  Map _getField(String collectionName, String modelID, String fieldName) {
-    Map c = _getCollection(collectionName);
-    if (c == null) return null;
-    if (!c["models"].containsKey(modelID)) return null;
-    Map f = tryGet(key: fieldName, map: c["fields"]);
-    dynamic v = tryGet(key: fieldName, map: c["models"][modelID].values);
-    if (v == null || f == null) return null;
-    Map out = {};
-    f.forEach((key, value) {
-      out[key] = value;
-    });
-    out["value"] = v;
-    // get Field from collection
-    return out;
-  }
-
-  Map _getCollection(String collectionName) =>
-      tryGet(key: collectionName, map: collections);
-
-  Map _parseFields(Map fields, Map modelData){
-    Map res ={};
-    if(debug){
-      print("parse Fields");
-      print(fields);
-      print(modelData);
-    }
-    fields.forEach((fieldName, fieldData) {
-      dynamic fieldValue = tryGet(key: fieldName, map: modelData);
-      res[fieldName] = _parseField(fieldData, fieldValue);
-    });
-    return res;
-  }
-
-  dynamic _parseField(Map field,dynamic val, {String linkedFieldName}) {
-
-    if (field["type"].contains("List")) {
-      print("list");
-       String col =field["type"].split("-")[1];
-      if(debug){
-        print(field["typeInfo"]);
-        print(field["type"]);
-        print(col);
-      }
-      List lv = val;
-      if(lv==[]) return [];
-      if(col!="ForeignKey")return lv;
-      List output=[];
-      val.forEach((modelID) {
-        print(modelID);
-        Map modelData=getModelData(field["typeInfo"], modelID);
-        if(modelData.isNotEmpty)
-          output.add(modelData);
+  loadFromFirebase(String c) async {
+    await Future.delayed(Duration(milliseconds: 20)); //  print(c);
+    Firestore.instance.collection(c).snapshots().listen((onData) {
+      onData.documents.forEach((dataItem) {
+        if (dataItem.data != null) {
+          collections[c]["models"][dataItem.data["id"]] = dataItem.data; // print(collections[c]);
+          colCount[c] = true;
+        }
       });
-      if(debug){
-        print(lv);
-        print(output);
-      }
-      return output;
-    } else {
-      // recursively get linked data
-      switch (field["type"]) {
-        case "UniqueKey":
-          return val;
-          break;
-        // case "ForeignKey":
-        //   if (linkedFieldName != null) {
-        //     return getVal(field["typeInfo"], val, linkedFieldName);
-        //   }
-        //   return val;
-         // break;
-        default:
-          return parseType(field["type"], val);
-          break;
-      }
-    }
+    });
   }
+List getItemsWhere(String collectionName, {Map<String, dynamic> fieldFilters, bool getLinkedData=false, bool getLinkedID=false}) {
+  List models = getModels(collectionName).values.toList();
+  if(fieldFilters==null)return models;
+  List res=[];
+  models.forEach((modelData) {
+       bool good = true;
+      fieldFilters.forEach((fieldName, value) {
+        var val = safeGet(key: fieldName, map: modelData, alt: null);
+        if(val==null || val!=value){ good=false; }
+       });
+       if(good){
+         res.add((getLinkedData ||getLinkedID)
+              ?addLinkedData(collectionName, modelData["id"], modelData, onlyIDs: getLinkedID)
+              :modelData);
+       }
+  });
+  return res;
 }
 
-dynamic tryGet({@required String key, @required Map map}) {
-  try {
-    if (map.containsKey(key)) return map[key];
-  } catch (e) {
-    print("error getting $key from map");
-  }
-  return null;
-}
-
-
-  // Map<String, dynamic> getFullModelData(String collectionName, String modelID) {
-  //   Map<String, dynamic> res = {};
-  //   //CustomCollection
-  //   Map c = _getCollection(collectionName);
-  //   if (c == null) return res;
-  //   c["fields"].forEach((fieldName, field) {
-  //     dynamic v = tryGet(key: fieldName, map: c["models"][modelID].values);
-  //     res[fieldName] = _parseField(field.copyWith(modelValue: v));
-  //   });
-  //   print(res);
-  //   return res;
-  // }
-  // List<String> getModelIDs(String name) {
-  //   if(debug)print("get $name model ids");
-  //   Map c = _getCollection(name);
-  //   if (c == null || !c.containsKey("models") || c["models"] == null) return [];
-  //   if(debug)print(c["models"]);
-  //   return c["models"].keys;
-  // }
-
-
-  // List getDataFromIDs(String collectionName, List ids) {
-  //   if(debug)print("get $collectionName model ids");
-  //   Map c = _getCollection(collectionName);
-  //   if (c == null || !c.containsKey("models") || c["models"] == null) return [];
-  //   List res =[];
-  //   ids.forEach((id) { 
-  //     var m = safeGet(key: id, map: c["models"], alt: null);
-  //     if(m!=null)
-  //         res.add(m);
-  //   });
-  //   if(debug)print(res);
-  //   return res;
-  // }
-
-// case "double":
-//           return (val is String) ? double.tryParse(val) : val;
-//           break;
-//         case "int":
-//           return (val is String) ? int.tryParse(val) : val;
-//           break;
-//         case "String":
-//           return val;
-//           break;
-//         case "bool":
-//           return val;
-//           break;
-//         case "DateTime":
-//           return val;
-//           break;
-// dynamic parseField(
-//   Map data, {
-//   String reqType,
-//   dynamic ifNull,
-//   bool nullAllowed = true,
-// }) {
-//   if (data['value'] == null) {
-//     return null;
-//   }
-//   switch (data["type"]) {
-//     case "double":
-//       return double.tryParse(data["value"]);
-//       break;
-//     case "int":
-//       return int.tryParse(data["value"]);
-//       break;
-//     case "String":
-//       return data["value"];
-//       break;
-//     case "List":
-//       return new List.from(data["value"]) ?? [];
-//       break;
-//     default:
-//       return data["value"];
-//       break;
-//   }
-// }
-
-// dynamic onNull({String type, dynamic ifNull, bool nullAllowed}) {
-//   if (nullAllowed) return null;
-//   if (ifNull != null) return ifNull;
-//   return ""; //TODO
-// }
-
-// CustomField _getField(
-//     String collectionName, String modelID, String fieldName) {
-//   CustomCollection c = _getCollection(collectionName);
-//   if (c == null) return null;
-//   if (!c.models.containsKey(modelID)) return null;
-//   CustomField f = tryGet(key: fieldName, map: c.fields);
-//   dynamic v = tryGet(key: fieldName, map: c.models[modelID].values);
-//   if (v == null || f == null) return null;
-//   // get Field from collection
-//   return f.copyWith(modelValue: v);
-// }
-
-// CustomCollection _getCollection(String collectionName) =>
-//     tryGet(key: collectionName, map: collections);
-
-// List<String> getModelIDs(String name) {
-//   print("get $name model ids");
-//   CustomCollection c = _getCollection(name);
-//   if (c == null || c.models == null) return [];
-//   return c.models.keys;
-// }
-// // TODO
-// uploadToSheet() async {
-//   print("start");
-//   // Gets spreadsheet
-//   ss = await gManager.spreadsheet(secrets.spreadsheetId);
-//   // Get collections
-//   g.Worksheet sheet=ss.worksheetByTitle("Org");
-
-//   Firestore.instance.collection("orgs").snapshots().listen((onData) {
-//     onData.documents.forEach((dataItem) {
-//       if (dataItem.data != null) {
-//         print(dataItem.data);
-//         var map = dataItem.data;
-//         if (map["active"]) {
-//           // Set spreadsheet to collection
-//           CustomCollection newCollection = CustomCollection.fromJson(map);
-//           newCollection.sheet = ss.worksheetByTitle(map["sheetName"]);
-//           // newCollection.initialize(updateFromSheet);
-//           loadFieldsFromSheet(newCollection);
-//           collections[newCollection.collectionName] = (newCollection);
-//         }
-//       }
-//     });
-//   });
-// }
-////
-///
-///
-// class CustomCollection {
-//   String modelName;
-//   String collectionName;
-//   String spreadsheetName;
-//   Map<String, CustomModel> models;
-//   g.Worksheet sheet;
-//   Map<String, CustomField> fields;
-//   // static const String URL ="https://script.google.com/macros/s/AKfycbyjlBSajhxT6mpKfHw2NowayEX3G__JNIJiLVzfc1zV02ewHmk/exec";
-
-//   CustomCollection(
-//       {this.modelName,
-//       this.collectionName,
-//       this.spreadsheetName,
-//       this.models,
-//       this.fields,
-//       this.sheet});
-
-//   CustomCollection.fromJson(var map)
-//       : modelName = map["name"] ?? "",
-//         collectionName = map["collectionName"] ?? "",
-//         spreadsheetName = map["sheetName"] ?? "";
-// }
-
-// class CustomModel {
-//   final String id;
-//   Map<String, dynamic> values;
-//   CustomModel({this.id, this.values});
-// }
-
-// class CustomField {
-//   String fieldName;
-//   String displayName;
-//   String type;
-//   String typeInfo;
-//   String defaultValue;
-//   String description;
-//   String status;
-//   dynamic value;
-//   CustomField(
-//       {this.fieldName,
-//       this.displayName,
-//       this.type,
-//       this.typeInfo,
-//       this.defaultValue,
-//       this.description,
-//       this.status,
-//       this.value});
-
-//   CustomField copyWith({@required dynamic modelValue}) {
-//     return CustomField(
-//         fieldName: fieldName,
-//         displayName: displayName,
-//         type: type,
-//         typeInfo: typeInfo,
-//         defaultValue: defaultValue,
-//         description: description,
-//         status: status,
-//         value: modelValue);
-//   }
-// }
-
-// initialize({bool updateFromSheet=false})async {
-//   // First check spreadsheet for changes to fields
-//   // Second Handle any changes to spreadsheet
-//   // wait to get all only if needed
-//   var v = await sheet.values.allColumns(fromColumn:2, length:5);
-// //  print(h);
-//   for(int i =1; i<v.length;i++){
-//     print(v[i]);
-//   }
-// }
-// CustomField getField(String modelID, String fieldName){
-//   if(models.containsKey(modelID) && fields.containsKey(fieldName)){
-//     return fields[fieldName].copy(value:tryGet(key:fieldName, map:models[modelID].values));
-//   }
-//   return null;
-// }
-
-// dynamic tryGet({@required String name, String type}) {
-//   if (fields.containsKey(name)){
-//     return parseField(fields[name]);
-//   }
-//  // return
-// } //this.data
-
-/*
-Each model will have a list of fields that contain
-all the metadata for the model type + the current value, 
-
-Models are made at the collection level so that metadata info can get passed in with them...
-Everything is accessed from the DataRepo level so that foreign keys can get replaces with data when the object is being called
-
-
-models functions include
-dynamic getValue() 
-setValue
- {
-   CollectionName:{
-     "models":[
-       "modelID":{
-         "fields:
-            [
-              "fieldName":{
-                "fieldName":"fieldName",
-                "displayName":"displayName",
-                "type":"type",
-                "typeInfo":"typeInfo",
-                "defaultValue":
-                "description":
-                "status":
-                "value":
-              }
-            
-            ]
-       },
-     ]
-     
-   }
+ Map getItemWhere(String collectionName,   Map<String, dynamic> fieldFilters){
+   List models =getModels(collectionName).values.toList();
+    return models.firstWhere((modelData){
+      bool good = true;
+      fieldFilters.forEach((fieldName, value) {
+        if(value!=null){
+          var val = safeGet(key: fieldName, map: modelData, alt: null);
+          if(val==null || val!=value)good=false;//return false;
+        }
+       });
+       return good;
+    }, orElse: ()=>{});
  }
 
-*/
+Map getItemByID(String collectionName,String modelID, {bool addLinks=false}){
+  if(modelID==null || modelID=="")return {};
+  Map res = checkPath(collections, [collectionName, "models", modelID])[1]??{};
+  if(!addLinks)return res;
+  return addLinkedData(collectionName, modelID, res, onlyIDs: true);
+}
 
-// /*
-// FIRESTORE
-// */
-//   getAllFromFirestore() {}
-//   CustomModel getOneFromFirestore() {}
-//   updateOneFromFirestore() {}
-//   saveOneToFirestore() {}
-//   saveAllToFirestore() {}
-//   deleteOneFromFirestore() {}
-// /*
-// Google Sheets
-// */
-//   checkGoogleSheets() {}
-//   updateMetaData() {}
-//   toGoogleSheet() {}
-//   fromGoogleSheet() {}
-// /*
-// General
-// */
-//   toCustomModel() {}
+// Converts list of ids into the data
+Map addLinkedData(String modelCollectionName,  String modelID, Map modelData,{ bool onlyIDs = false}){
+  Map res=modelData??{};
+  collections.forEach((collectionName, collectionData) {
+    if(collectionName!=modelCollectionName){
+      collectionData["fields"].forEach((fieldName, fieldData){
+      //  print(fieldName);
+        var type= safeGet(key:"type", map:fieldData, alt: "");
+        var typeInfo = safeGet(key:"typeInfo", map:fieldData, alt:"" );
+        if(type=="ForeignKey"  && typeInfo==modelCollectionName){
+        //  print(collectionName);print(fieldName);
+          res[collectionName]=linkedDataList(collectionName, fieldName, modelID, onlyIDs: onlyIDs)??[];
+        }
+      });
+    }
+  });
+  return res;
+}
 
-//   toJson() {
+List linkedDataList(String collectionName, String fieldName, String modelID, {bool onlyIDs = false}){
+  List res=[];
+  if(!collectionExists(collectionName))return [];
+  try{
+  collections[collectionName]["models"].forEach((id, data){
+    String fieldVal = safeGet(key:fieldName, map:data, alt: "");
+    if(fieldVal==modelID){
+      res.add(onlyIDs?id:data);
+    }
+  });
+  }catch(e){}//{print("error"); }
+  return res;
+}
 
-//   }
-//  CustomModel getOne(String id) {}
-//   List<CustomModel> getList(List<String> ids) {}
+// Converts list of ids into the data
+// Map getLinkedInfo(String collectionName,String , String fieldName, Map linkedData){
+//   Map res=linkedData??{};
+//   List collection = checkPath(collections, [collectionName, "fields", fieldName, "typeInfo"]);
+//   if(collection[1])return {};
 
-// dynamic emptyVal(String type ) {
-//   if(data['value']==null){
-//     return null;
-//   }
-//   switch (data["type"]) {
-//     case "double":
-//       return double.tryParse(data["value"]);
-//       break;
-//     case "int":
-//       return int.tryParse(data["value"]);
-//       break;
-//     case "String":
-//       return data["value"];
-//       break;
-//     case "List":
-//       return new List.from(data["value"])??[];
-//       break;
-//     default:
-//       return data["value"];
-//       break;
-//   }
+//   collections[collectionName]["fields"]
+//   .forEach((fieldName, fieldData){
+//         var type= safeGet(key:"type", map:fieldData, alt: "");
+//         var typeInfo = safeGet(key:"typeInfo", map:fieldData, alt:"" );
+//         if(type=="ForeignKey" && modelData.containsKey(fieldName)){
+//           res[fieldName]=checkPath(collections, [typeInfo, "models", modelData[fieldName]])[1]??{};
+//         }
+//   });
+//   return res;
 // }
 
-Map<String, dynamic> defaultEnum = {};
+/*
+FIREBASE
+*/
+/* 
+GET
+*/
+Future<Map<String, dynamic>> getModelFromFirestore({
+    @required String modelID,
+    @required String collectionName,
+  }) async {
+    DocumentSnapshot document =
+        await _db.collection(collectionName).document(modelID).get();
+    return document.data;
+  }
+  /* 
+CREATE
+*/
+  Future createModel({@required Map<String, dynamic> modelData,
+      @required String collectionName}) async { //if (checkPath(collections, [collectionName, "models"])[1]){
+   print("CREATE MODE");
+    print(modelData);
+    print(collectionName);
+      try{
+      collections[collectionName]["models"][modelData["id"]]=modelData;
+      await _db
+          .collection(collectionName)
+          .document(modelData["id"])
+          .setData(modelData)
+          .catchError((onError) {
+        print(onError);
+      });
+      print("DONE");
+      return;
+    }catch(e){return;}
+  }
+  /*
+
+DELETE
+
+  */
+  deleteItem({
+    @required String modelID,
+    @required String collectionName,
+  }) async {
+     print("delete");
+     try{
+
+        collections[collectionName]["models"].remove(modelID);
+        await _db.collection(collectionName).document(modelID).delete();
+    }catch(e){}
+  }
+
+/*
+UPDATE
+*/
+updateModelValue({
+    @required String modelID,
+    @required String collectionName,
+    @required String fieldName,
+    @required dynamic newVal,
+  }) async {
+   //if (checkPath(collections, [collectionName, "models", modelID])[1]){
+     try{
+        collections[collectionName]["models"][modelID][fieldName]=newVal;    
+   // User ... Claim .... users .... claimsList// Get doc
+        await _db
+            .collection(collectionName)
+            .document(modelID)
+            .updateData({fieldName: newVal}).then((result) {
+          print("updated val");
+        }).catchError((onError) {
+          print("onError");
+        });
+     }catch(e){}
+     // }
+  }
+
+
+     /*
+
+SHEETS
+
+
+      */
+
+ addRowsToSheet({List vals, String collectionName, String sheetName}) async {
+
+     g.Worksheet sheet;
+     if(collectionName!=null){
+          if ( !collectionExists(collectionName)) return;
+          String name =collections[collectionName]["sheetName"];
+        // print(name);
+         sheet = ss.worksheetByTitle(name);
+     }else if(sheetName !=null){
+       sheet = ss.worksheetByTitle(sheetName);
+     }else{
+       return;
+     }
+    for (int r = 0; r< vals.length; r++) {
+      for (int c = 0; c < vals[r].length; c++) {
+      //  print(vals[r][c]);
+       sheet.values.insertValue(vals[r][c], column: c + 1, row: r+2);
+      await Future.delayed(Duration(milliseconds: 10));
+     // print(vals[r][c]);
+    }}
+  
+ }
+  addRowToSheet({List vals, String collectionName,String sheetName}) async {
+    g.Worksheet sheet;
+     if(collectionName!=null){
+          if ( !collectionExists(collectionName)) return;
+          String name =collections[collectionName]["sheetName"];
+        // print(name);
+         sheet = ss.worksheetByTitle(name);
+     }else if(sheetName !=null){
+       sheet = ss.worksheetByTitle(sheetName);
+     }else{
+       return;
+     }
+    
+    sheet.insertRow(2);
+    await Future.delayed(Duration(milliseconds: 10));
+    for (int y = 0; y < vals.length; y++) {
+       sheet.values.insertValue(vals[y], column: y + 1, row: 2);
+       await Future.delayed(Duration(milliseconds: 10));
+
+    }
+  }
+ 
+}
+
+
+
+  //   _db.collection("mail").add({
+  // 'to': 'crsemail3@gmail.com',
+  // 'message': {
+  //   'subject': 'Hello from Firebase!',
+  //   'text': 'This is the plaintext section of the email body.',
+  //   'html': 'This is the <code>HTML</code> section of the email body.',
+  // }
+// });
+
+   // String start = getColumnLetter(0);
+    // String end = getColumnLetter(vals.length);
+    // int endRow = vals[0].length+1;
+
+    // await sheet.updateAll(
+    //   values:vals, 
+    //   range: "'$name'!${start}1:$end$endRow",
+    //   majorDimension: DIMEN_ROWS);
+
+
+  // List getModelsData(String collectionName) {
+  //   if (!collections.containsKey(collectionName)) return [];
+  //   if (debug) {
+  //     print("get $collectionName model ids");
+  //     print(collections[collectionName]["models"]);
+  //   }
+  //   // INIT
+  //   List out = [];
+  //   collections[collectionName]["models"].forEach((modelID, modelFieldValsMap) {
+  //     if (modelID != null && modelFieldValsMap != null) {
+  //       Map<String, dynamic> fieldValsMap = addLinkedData(collectionName, modelID,  modelFieldValsMap);
+  //       if (fieldValsMap != null && fieldValsMap != {}) out.add(fieldValsMap);
+  //     }
+  //   });
+  //   return out;
+  // }
+  // Map<String, dynamic> getModelData(String collectionName, String modelID) {
+  //   Map<String, dynamic> modelDataMap = {};
+  //   if (!collections.containsKey(collectionName) ||
+  //       !collections[collectionName]["models"].containsKey(modelID))
+  //     return modelDataMap;// Returns model data w/ linked lists filled in w/ data
+  //   modelDataMap = addLinkedData(collectionName, modelID, collections[collectionName]["models"][modelID]);
+  //   //_checkFieldsForIDList( collectionName, collections[collectionName]["models"][modelID]);
+  //   if (debug) {
+  //     print("get model data, collection $collectionName, modelID: $modelID");
+  //     print(collections[collectionName]["models"]);
+  //     print(modelDataMap);
+  //   }
+  //   return modelDataMap;
+  // }
+
+
+
+
+  // deleteModel({
+  //   @required String modelID,
+  //   @required String collectionName,
+  // }) async {
+  //  Map data =  await getModelFromFirestore(modelID: modelID, collectionName: collectionName);
+  //  //await updateLinkedData(collectionName:collectionName, newData:data, remove:true);
+  //   await _db.collection(collectionName).document(modelID).delete();
+  // } //   if (checkPath(collections, [collectionName, "models", modelID])[1]){
+   //   print("true");

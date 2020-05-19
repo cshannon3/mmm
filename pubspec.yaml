@@ -1,4 +1,4 @@
-name: de_makes_final
+name: delaware_makes
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
  
@@ -32,6 +32,11 @@ dependencies:
   get_it:
   font_awesome_flutter:
   universal_html:
+  searchable_dropdown:
+  #flutter_google_places:
+  geocoder:
+  cloud_functions:
+  #google_maps_webservice:
  # provider: any
   google_maps: ^3.4.1
   fluro:
