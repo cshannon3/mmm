@@ -50,7 +50,7 @@ class DataRepo {
           Map<String, dynamic> map = dataItem.data;
           collections[map["collectionName"]] = map;
           collections[map["collectionName"]]["models"] = {}; //  print(collections[map["collectionName"]]);
-          loadFromFirebase(map["collectionName"]); // colCount[c]=true;
+          _loadFromFirebase(map["collectionName"]); // colCount[c]=true;
         }
       });
     });
@@ -59,11 +59,11 @@ class DataRepo {
   loadCollectionsFromFirebase() async {
     colCount = {};
     collections.forEach((collectionName, collectionData) async {
-      await loadFromFirebase(collectionName);
+      await _loadFromFirebase(collectionName);
     });
   }
 
-  loadFromFirebase(String c) async {
+  _loadFromFirebase(String c) async {
     await Future.delayed(Duration(milliseconds: 20)); //  print(c);
     Firestore.instance.collection(c).snapshots().listen((onData) {
       onData.documents.forEach((dataItem) {
@@ -76,23 +76,25 @@ class DataRepo {
   }
 List getItemsWhere(String collectionName, {Map<String, dynamic> fieldFilters, bool getLinkedData=false, bool getLinkedID=false}) {
   List models = getModels(collectionName).values.toList();
-  if(fieldFilters==null)return models;
+  //if(fieldFilters==null)return models;
   List res=[];
   models.forEach((modelData) {
        bool good = true;
-      fieldFilters.forEach((fieldName, value) {
-        var val = safeGet(key: fieldName, map: modelData, alt: null);
-        if(val==null || val!=value){ good=false; }
-       });
+       if(fieldFilters!=null){
+        fieldFilters.forEach((fieldName, value) {
+          var val = safeGet(key: fieldName, map: modelData, alt: null);
+          if(val==null || val!=value){ good=false; }
+        });
+       }
+
        if(good){
          res.add((getLinkedData ||getLinkedID)
-              ?addLinkedData(collectionName, modelData["id"], modelData, onlyIDs: getLinkedID)
+              ?_addLinkedData(collectionName, modelData["id"], modelData, onlyIDs: getLinkedID, )
               :modelData);
        }
   });
   return res;
 }
-
  Map getItemWhere(String collectionName,   Map<String, dynamic> fieldFilters){
    List models =getModels(collectionName).values.toList();
     return models.firstWhere((modelData){
@@ -107,15 +109,18 @@ List getItemsWhere(String collectionName, {Map<String, dynamic> fieldFilters, bo
     }, orElse: ()=>{});
  }
 
-Map getItemByID(String collectionName,String modelID, {bool addLinks=false}){
+Map getItemByID(String collectionName,String modelID, {bool addLinkIDs=false,  bool addLinkMap=false}){
   if(modelID==null || modelID=="")return {};
   Map res = checkPath(collections, [collectionName, "models", modelID])[1]??{};
-  if(!addLinks)return res;
-  return addLinkedData(collectionName, modelID, res, onlyIDs: true);
+  if(!addLinkIDs && !addLinkMap)return res;
+  return _addLinkedData(collectionName, modelID, res, onlyIDs: addLinkIDs);
 }
 
+
+
+
 // Converts list of ids into the data
-Map addLinkedData(String modelCollectionName,  String modelID, Map modelData,{ bool onlyIDs = false}){
+Map _addLinkedData(String modelCollectionName,  String modelID, Map modelData,{ bool onlyIDs = false}){
   Map res=modelData??{};
   collections.forEach((collectionName, collectionData) {
     if(collectionName!=modelCollectionName){
@@ -125,7 +130,8 @@ Map addLinkedData(String modelCollectionName,  String modelID, Map modelData,{ b
         var typeInfo = safeGet(key:"typeInfo", map:fieldData, alt:"" );
         if(type=="ForeignKey"  && typeInfo==modelCollectionName){
         //  print(collectionName);print(fieldName);
-          res[collectionName]=linkedDataList(collectionName, fieldName, modelID, onlyIDs: onlyIDs)??[];
+         onlyIDs? res[collectionName]=_linkedDataList(collectionName, fieldName, modelID, onlyIDs: onlyIDs)??[]:
+                  res[collectionName]=_linkedDataMap(collectionName, fieldName, modelID, )??{};
         }
       });
     }
@@ -133,7 +139,7 @@ Map addLinkedData(String modelCollectionName,  String modelID, Map modelData,{ b
   return res;
 }
 
-List linkedDataList(String collectionName, String fieldName, String modelID, {bool onlyIDs = false}){
+List _linkedDataList(String collectionName, String fieldName, String modelID, {bool onlyIDs = false}){
   List res=[];
   if(!collectionExists(collectionName))return [];
   try{
@@ -146,7 +152,19 @@ List linkedDataList(String collectionName, String fieldName, String modelID, {bo
   }catch(e){}//{print("error"); }
   return res;
 }
-
+Map _linkedDataMap(String collectionName, String fieldName, String modelID, ){
+  Map res = {};
+  if(!collectionExists(collectionName))return {};
+  try{
+  collections[collectionName]["models"].forEach((id, data){
+    String fieldVal = safeGet(key:fieldName, map:data, alt: "");
+    if(fieldVal==modelID){
+      res[id]=data;
+    }
+  });
+  }catch(e){}//{print("error"); }
+  return res;
+}
 // Converts list of ids into the data
 // Map getLinkedInfo(String collectionName,String , String fieldName, Map linkedData){
 //   Map res=linkedData??{};

@@ -1,3 +1,4 @@
+import 'package:delaware_makes/forms/form_entry_field.dart';
 import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/service_locator.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
@@ -70,11 +71,11 @@ class _SignInState extends State<SignIn> {
                   child: Column(children: <Widget>[
                     formTitle("Sign In"),
                     formDescription("Email:", ),
-                    formEntryField(
+                    FormEntryField(
                         labelText: 'Email',hint: 'Enter email',
                         onChange: (val) => setState(() => _email = val)),
                     formDescription("Password:",),
-                    formEntryField( //w: w,
+                    FormEntryField( //w: w,
                         labelText: 'Password',hint: 'Enter password',isPassword: true,
                         onChange: (val) => setState(() => _password = val)),
                                 Expanded(child: Container(),),

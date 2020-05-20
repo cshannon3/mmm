@@ -2,7 +2,7 @@ library pages;
 
 export 'about_page.dart';
 export 'home/home_page.dart';
-export 'locations/locations_page.dart';
+export 'locations/loc2.dart';
 export 'admin/admin_page.dart';
 export 'profile/profile_page.dart';
 export 'designs/designs_page.dart';

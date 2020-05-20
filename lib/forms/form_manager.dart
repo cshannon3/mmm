@@ -20,22 +20,20 @@ class FormManager extends ChangeNotifier {
 
   n(){notifyListeners();}
 
-
   FormModel get currentForm => (currentScreenNum != null &&
           activeFormScreens != null &&
           activeFormScreens.length > currentScreenNum)
       ? activeFormScreens[currentScreenNum]
       :null;
-
  Future<String> next() async {
     print("Next)");
-         activeFormScreens.forEach((element) {
+      activeFormScreens.forEach((element) {
        // print(element.formData["buffer"]);
         element.formData["buffer"].forEach((k, v) {
           buffer[k] = v;
         });
       });
-     //print(buffer);
+      print(buffer);
     if ((currentScreenNum+1) >= activeFormScreens.length) {
       // Form Complete
       activeFormScreens.forEach((element) {
@@ -44,9 +42,8 @@ class FormManager extends ChangeNotifier {
           buffer[k] = v;
         });
       });
-      print(buffer);
-      print(currentType);
-      
+
+  
       await submit();
       isActive=false;
       notifyListeners();
@@ -61,8 +58,8 @@ class FormManager extends ChangeNotifier {
           buffer[k] = v;
         });
       });
-    print("check code");
-    print(buffer);
+    //print("check code");
+    //print(buffer);
     List groups = safeGet(key: "groupsData", map: buffer, alt: []);
     int i=0;
     String code = safeGet(key: "verification", map: buffer, alt: null);
@@ -79,26 +76,27 @@ class FormManager extends ChangeNotifier {
   }
 
 
-
-  initClaim({@required Map orgData, @required Map requestData}) {
+  initClaim({@required Map orgData, @required Map requestData, @required maxQuantity}) {
     var dataRepo = locator<DataRepo>();
-    List groups = dataRepo.getItemsWhere("groups");
-   // print("Init Update");
+    var groups = dataRepo.getItemsWhere("groups");
+    var designData = dataRepo.getItemByID("designs",safeGet(key: "designID", map: requestData, alt: 0));
+   // print(groups);
     isVer=true;
     buffer = {};
     buffer["id"] = generateNewID(); 
     buffer["orgData"] = orgData;
+    buffer["maxQuantity"] = maxQuantity;
+    buffer["designData"]=designData;
     buffer["requestData"] = requestData;
     buffer["groupsData"] = groups;
-    //print(buffer);
   }
   initUpdate({Map claimData}) {
       isVer=true;
        //print("Init Update");
       buffer = {}; print(claimData);
-          var dataRepo = locator<DataRepo>();
-    List groups = dataRepo.getItemsWhere("groups");
-  //  print(groups);
+      var dataRepo = locator<DataRepo>();
+    var groups = dataRepo.getItemsWhere("groups");
+   // print(groups);
     //  data
       if (claimData != null) {
         buffer["claimID"] = claimData["id"];
@@ -110,7 +108,7 @@ class FormManager extends ChangeNotifier {
       }
     } //Widget getOverlayWidget(String _currentType, BuildContext context){
   setForm(String _currentType, {bool resetBuffer = true}) {
-   // print("SET");
+
     if(resetBuffer)buffer = {};
     currentType = _currentType;
     currentScreenNum=0;
@@ -125,11 +123,12 @@ class FormManager extends ChangeNotifier {
     }
     else if (currentType == 'claim') {
       activeFormScreens = [
-       // FormModel(formData: userInfo()),
-        FormModel(formData: claimInfo()),
+
+      FormModel(formData: claimInfo(buffer)),
+         FormModel(formData: claimVer(buffer)),
         FormModel(
             formData: nextSteps(steps: [
-          "Connection - We will connect you to the organization and inform them of your claim",
+          "Connection ",
           "Delivery ",
           "Update "
         ])),
@@ -165,23 +164,13 @@ class FormManager extends ChangeNotifier {
     }
   }
 
-//    MaterialRequestPage();
   Future<bool> submit() async {
     print("Submit");
-   // print(buffer);
     var dataRepo = locator<DataRepo>();
-   // print("1");
-   //  print(currentType);
     String now = DateTime.now().toUtc().toString();
-     // print("2");
-    // print(currentType);
-    // print(buffer);
      buffer["createdAt"] = now;
      buffer["lastModified"] = now;
     Map<String, dynamic> map = buffer;
-     //print("3");
-    // print(currentType);
-   // print(map);
     if (currentType == "claim") {
       print("SUBMIT CLAIM");
       String newClaimID = generateNewID();
@@ -215,7 +204,6 @@ class FormManager extends ChangeNotifier {
       List groups = safeGet(key: "groupsData", map: buffer, alt: []);
       int i=0;
       String code = safeGet(key: "verification", map: buffer, alt: null);
-     // print(code);
       Map group;
       if(code ==null)return false;
       while (i <groups.length && group==null){
@@ -226,7 +214,6 @@ class FormManager extends ChangeNotifier {
       }
       if(group==null){
         print("not found");
-        //return false;
       }else{
       print("found");
       Map<String, dynamic> resourceData = newResource(map, newResourceID, group["id"]);
@@ -263,7 +250,6 @@ class FormManager extends ChangeNotifier {
           reqData.add(requestData);
         }
       }); // CREATE REQUEST
-      //print(reqData);
       for (int i = 0; i < reqData.length; i++) {
       //  print(i);
         await dataRepo.createModel(
@@ -285,8 +271,6 @@ class FormManager extends ChangeNotifier {
   }
 
   Widget getOverlay(){
-  //  print("HELLO");
-   // print(isActive);
     if(!isActive)return SizedBox();
   else{  // hasOverlay=true;
     return  Container(
@@ -316,7 +300,6 @@ class FormManager extends ChangeNotifier {
 
 
 Map<String, dynamic> newOrg(Map map, String id, String now) {
-   
      Map<String, dynamic> out= 
      { "id": id,
       "isVerified": false,
@@ -400,3 +383,9 @@ Map<String, dynamic> newClaim(Map map, String id, String now, String groupID) =>
 //             modelID: map["orgID"], collectionName: "orgs");
 //       else {
 //Map<String, dynamic> resourceData = newResource(map);
+
+    //  if (currentForm.formData.containsKey("formKey")){
+      //     currentForm.formData["formKey"].
+      //  }
+      // print(buffer);
+      // print(currentType);

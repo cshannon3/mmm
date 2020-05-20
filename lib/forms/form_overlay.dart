@@ -2,6 +2,7 @@
 
 import 'package:delaware_makes/forms/components/Image_upload_widget.dart';
 import 'package:delaware_makes/forms/components/stylized_image_form_input.dart';
+import 'package:delaware_makes/forms/form_entry_field.dart';
 import 'package:delaware_makes/forms/form_manager.dart';
 import 'package:delaware_makes/forms/form_model.dart';
 import 'package:delaware_makes/service_locator.dart';
@@ -26,6 +27,19 @@ FormOverlay({
 class _FormOverlayState extends State<FormOverlay> { // int currentScreenNum = 0; // Map buffer;//AppState appstate;
    CustomLoader loader;
    FormManager formManager;
+    final  List<GlobalKey> formKeys =  [GlobalKey<FormState>(),GlobalKey<FormState>(),GlobalKey<FormState>(),GlobalKey<FormState>()];
+
+
+     @override
+  void dispose() {
+    // TODO: implement dispose
+    formKeys.forEach((element) {
+      element.currentState.dispose();
+    });
+    super.dispose();
+  }
+  
+
   
    @override
   void initState() {
@@ -33,10 +47,22 @@ class _FormOverlayState extends State<FormOverlay> { // int currentScreenNum = 0
     loader = CustomLoader();
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return (formManager.currentForm.formData.containsKey("formKey"))? Container(
+      width: 400.0,
+      child: Form(
+       key: formKeys[formManager.currentScreenNum],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children:[
+              progressRow(),
+              SizedBox( height: 10.0, ), // padForm(userInfoForm(),  h: 450.0),
+              formTab() //FormTab(formModel: formManager.activeFormScreens[currentScreenNum],onDone: ()=>next(),),// screenWidgets[currentScreenNum]
+          ]),
+      ),
+    ):Container(
       width: 400.0,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +72,8 @@ class _FormOverlayState extends State<FormOverlay> { // int currentScreenNum = 0
             SizedBox( height: 10.0, ), // padForm(userInfoForm(),  h: 450.0),
             formTab() //FormTab(formModel: formManager.activeFormScreens[currentScreenNum],onDone: ()=>next(),),// screenWidgets[currentScreenNum]
         ]),
-    );
+    )
+    ;
   }
 
   Widget iconButton(int itemNum){
@@ -99,9 +126,10 @@ class _FormOverlayState extends State<FormOverlay> { // int currentScreenNum = 0
   }
 
   Widget formTab(){
-    print(formManager.currentForm.formData);
+    //print(formManager.currentForm.formData);
     List<Widget> items = [];int i =0;
     formManager.currentForm.formData["items"].forEach((data) {
+      
       items.add(line(data, i));
       items.add(SizedBox(height:safeGet(key: "b", map: data, alt: 0.0),));
       i+=1;
@@ -136,15 +164,27 @@ class _FormOverlayState extends State<FormOverlay> { // int currentScreenNum = 0
      switch (t) {
         case "title": return formTitle(text); break;
         case "description":return formDescription(text); break;
+        case "image":
+          String url = safeGet(key: "url", map: data, alt: "");
+          return  Container(
+            height:200.0,
+            child: Center(child: Container(width:200.0, height:200.0, 
+                  child:Image.network((url!="")?url:placeHolderUrl)
+                  ,),),
+          );
+          break;
         case "formEntryField":
               String key  = safeGet(key: "key", map: data, alt: "");
               int maxLines  = safeGet(key: "maxLines", map: data, alt: 1);
               var v = formManager.currentForm.getVal(key);
-             return formEntryField(
+            //  print(v);
+             // print(data);
+             var f = new FormEntryField(
                   maxLines: maxLines,
                   initVal: v,
                   labelText: text,hint: text,
                   onChange:(val)=> setState(() { formManager.currentForm.setKey(key, val);} ));
+            return f;
          break;
 
         case "imageInputForm":
@@ -165,7 +205,7 @@ class _FormOverlayState extends State<FormOverlay> { // int currentScreenNum = 0
               String key  = safeGet(key: "key", map: data, alt: "");
               String url=  formManager.currentForm.getVal(key);
               String name  =formManager.currentForm.getVal("name");
-              print(name);
+            //  print(name);
              // bool  isActive =formManager.currentForm.getVal("isActive")??false;
              return ImageUploadWidget(
                   url: url,
@@ -203,10 +243,15 @@ class _FormOverlayState extends State<FormOverlay> { // int currentScreenNum = 0
               formManager.currentForm.isCompleted=true;
                 formManager.next().then((value) {}).whenComplete((){
                    loader.hideLoader();
+                   print(formManager.currentScreenNum);
                    if((formManager.currentScreenNum)>=formManager.activeFormScreens.length){
                       formManager.isActive=false;
-                    }else{formManager.currentScreenNum += 1;}
+                       
+                    }else{
+                      formManager.currentScreenNum += 1;
+                    }
                     setState(() { 
+                      print(formManager.currentScreenNum);
                      }); } 
                 );
             }

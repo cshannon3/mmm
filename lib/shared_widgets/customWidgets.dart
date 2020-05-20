@@ -126,29 +126,6 @@ Widget customInkWell({Widget child,BuildContext context,Function(bool,int) funct
     ),
   );
 }
-SizedBox sizedBox({double height = 5, String title}){
-    return SizedBox(
-      height: title == null || title.isEmpty ? 0 : height,
-    );
-  }
-// Widget customNetworkImage(String path,{BoxFit fit = BoxFit.contain}){
-//   return Image(
-//     image: customAdvanceNetworkImage(path),
-//     fit: fit);
-// }
-// dynamic customAdvanceNetworkImage(String path){
-//   return AdvancedNetworkImage(
-//      path ?? dummyProfilePic,
-//      useDiskCache: true,
-//      printError: true,
-//     //  fallbackAssetImage: 'assets/images/userIcon.png',
-//      loadFailedCallback: (){
-//        cprint(' Image load failed' + path);
-//      },
-//      cacheRule: CacheRule(
-//      maxAge: const Duration(days: 7)
-//   ),);
-// }
 void showAlert(BuildContext context,{@required Function onPressedOk,@required String title,String okText = 'OK', String cancelText = 'Cancel'}) async{
    showDialog(
      context: context,
@@ -188,38 +165,7 @@ void customSnackBar(GlobalKey<ScaffoldState> _scaffoldKey,String msg,{double hei
       content:Text(msg, style: TextStyle(color:Colors.white,),));
            _scaffoldKey.currentState.showSnackBar(snackBar);
   }
-Widget emptyListWidget(BuildContext context, String title,{String subTitle,String image = 'emptyImage.png'}){
-  return Container(
-     color: Color(0xfffafafa),
-    child:Center(
-    child: Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          width: fullWidth(context) * .95,
-          height: fullWidth(context) * .95,
-          decoration: BoxDecoration(
-            // color: Color(0xfff1f3f6),
-            boxShadow: <BoxShadow>[
-              // BoxShadow(blurRadius: 50,offset: Offset(0, 0),color: Color(0xffe2e5ed),spreadRadius:20),
-              BoxShadow(offset: Offset(0, 0),color: Color(0xffe2e5ed),),
-              BoxShadow(blurRadius: 50,offset: Offset(10,0),color: Color(0xffffffff),spreadRadius:-5),
-            ],
-            shape: BoxShape.circle
-          ),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/images/$image',height: 170),
-            SizedBox(height: 20,),
-            customText(title,style: Theme.of(context).typography.dense.display1.copyWith(color: Color(0xff9da9c7))),
-            customText(subTitle,style: Theme.of(context).typography.dense.body2.copyWith(color: Color(0xffabb8d6))),
-        ],) 
-    ],)
-  )
-  );
-}
+
 
 
  Widget loader(){

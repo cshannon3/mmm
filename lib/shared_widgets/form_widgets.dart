@@ -7,58 +7,7 @@ import 'package:delaware_makes/extensions/hover_extension.dart';
 
 
 
-Widget formEntryField(
-    {@required String labelText,
-    String hint,
-    String emptyText,
-    double w,
-    Function(dynamic) onChange,
-    
-    bool isNumber = false,
-    bool isPassword = false,
-    String initVal="",
-    Function(String) validator,
-     int maxLines=1}) {
-  return Container(
-    width:double.infinity,
-    //margin: EdgeInsets.symmetric(vertical: 15)
-    decoration: BoxDecoration(
-      color: Colors.grey.shade200,
-      borderRadius: BorderRadius.circular(30),
-    ),
-    child: TextFormField(
-      initialValue: initVal,
-      maxLines: maxLines,
-      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-      style: TextStyle(
-        fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.normal,
-      ),
 
-      onChanged: onChange,
-      validator: validator?? (value) { if(value.isEmpty)return'Enter $labelText';return null;},
-      
-      obscureText: isPassword,
-      decoration: InputDecoration(
-        hintText: hint,
-        border: InputBorder.none,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(30.0),
-          ),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        errorBorder:  OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(30.0),
-          ),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-      ),
-    ),
-  ).showCursorOnHover.moveUpOnHover;
-}
 
  Widget formInputSimple(
    String labelText,

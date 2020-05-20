@@ -11,8 +11,6 @@ class AboutUsPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 40.0),
       child:  toListText(
               safeGet(key:"AboutUs", map:state.docsRepo.doc.sections, alt:""))
-      
-
     );
    
   }

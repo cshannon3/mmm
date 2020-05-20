@@ -1,7 +1,4 @@
 
-import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
-import 'package:delaware_makes/shared_widgets/title_text.dart';
-//import 'package:delaware_makes/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:delaware_makes/extensions/hover_extension.dart';
 

@@ -1,5 +1,6 @@
 
 
+import 'package:delaware_makes/forms/form_entry_field.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class StylizedImageFormInput extends StatelessWidget {
                   Text(name??""),
                   Container(
                       width: 100,
-                      child: formEntryField(
+                      child: FormEntryField(
                         labelText: name,
                         onChange: onChange, 
                         initVal:initVal,

@@ -104,8 +104,8 @@ class ProfilePage extends StatelessWidget {
 
   Widget claimsList(BuildContext context){
     List<Widget> clWidget=[];
-    List claims = safeGet(map: state.getProfileData(), key: "claims",alt: []);
-    claims.forEach((cl) {
+    Map claims = safeGet(map: state.getProfileData(), key: "claims",alt: {});
+    claims.forEach((k, cl) {
      // print(cl);
      // Map des =state.designs.firstWhere((element) => element["id"]== cl["designID"], orElse: ()=>{});
     Map des = state.dataRepo.getItemByID("designs", cl["designID"]);
@@ -143,22 +143,17 @@ class ProfilePage extends StatelessWidget {
             height: 40,
           ),
         state.isCurrentUser() ?  MainUIButton(
-             
               onPressed: () {
                  var formManager = locator<FormManager>();
-              
-            formManager.setForm("update", );
-                // state.initUpdate();
-                // platformInfo.setOverlay("update");
-               // tappedMenuButton(context, "/update");
+                formManager.setForm("update",);
               },
               text: "New Update"):Container(),
-          TitleText("Claims"),
+          formTitle("Claims"),
           claimsList(context),
            SizedBox(
             height: 40,
           ),
-          TitleText("Updates"),
+          formTitle("Updates"),
                 Container(
           height:500.0,
           child: GridView.count(
@@ -166,7 +161,8 @@ class ProfilePage extends StatelessWidget {
   children: imageSliders(safeGet(
                             map: state.getProfileData(),
                             key: "resources",
-                            alt: [])))
+                            alt: {}).values
+                            ))
                             )
         
         

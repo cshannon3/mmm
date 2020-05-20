@@ -5,7 +5,6 @@ import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/service_locator.dart';//import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/shared_widgets/button_widgets.dart';
 import 'package:delaware_makes/state/app_state.dart';
-import 'package:delaware_makes/state/platform_state.dart';
 import 'package:delaware_makes/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,8 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 class RootPage extends StatefulWidget {
   final Widget screen;
   final String currentRoute;
-
-
   RootPage({Key key, this.screen, this.currentRoute}) : super(key: key);
 
   @override

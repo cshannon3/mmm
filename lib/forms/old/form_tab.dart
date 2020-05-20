@@ -1,5 +1,6 @@
 
 import 'package:delaware_makes/forms/components/stylized_image_form_input.dart';
+import 'package:delaware_makes/forms/form_entry_field.dart';
 import 'package:delaware_makes/forms/form_model.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/utils/utility.dart';
@@ -52,7 +53,7 @@ class _FormTabState extends State<FormTab> {
               String key  = safeGet(key: "key", map: data, alt: "");
               int maxLines  = safeGet(key: "maxLines", map: data, alt: 1);
               var v = widget.formModel.getVal(key);
-             return formEntryField(
+             return FormEntryField(
                   maxLines: maxLines,
                   initVal: v,
                   labelText: text,hint: text,

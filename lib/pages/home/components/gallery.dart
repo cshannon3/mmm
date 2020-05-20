@@ -7,6 +7,9 @@ import 'package:delaware_makes/utils/constant.dart';
 import 'package:delaware_makes/utils/utility.dart';
 import 'package:flutter/material.dart';
 class Gallery extends StatefulWidget {
+  final double w;
+
+  const Gallery({Key key, @required this.w}) : super(key: key);
   @override
   _GalleryState createState() => _GalleryState();
 }
@@ -14,28 +17,30 @@ class Gallery extends StatefulWidget {
 class _GalleryState extends State<Gallery> {
   AppState appState;
     List<Widget>  tiles;
-
-  
   
   @override
   void initState() { // loader = CustomLoader();
-    tiles = galleryTiles();
+    tiles = galleryTiles(getColumnNum(widget.w));
     super.initState();
   }
 
-  List<Widget> galleryTiles() {
+  List<Widget> galleryTiles(int itemsPerRow) {
     appState = locator<AppState>();
     List<Widget> out=[];
     List<String> r= ["Submission"];
 
-   List resources= appState.dataRepo.getItemsWhere("resources", );
+   List resources= appState.dataRepo.getItemsWhere("resources", fieldFilters: {
+   "type":"Submission"
+    });
    resources.shuffle();
-   resources.forEach((resource) {
-     String type= safeGet(key: "type", map: resource, alt: "");
-     String url =safeGet(key: "url", map:resource, alt:null);
+   int maxLen = itemsPerRow*2<resources.length? itemsPerRow*2:resources.length;
+
+   for (int i=0; i<maxLen; i++){
+     String type= safeGet(key: "type", map: resources[i], alt: "");
+     String url =safeGet(key: "url", map:resources[i], alt:null);
     Widget bottomWid;
-     if(resource.containsKey("userID")){
-        Map user = appState.dataRepo.getItemByID("users", resource["userID"]);
+     if(resources[i].containsKey("userID")){
+        Map user = appState.dataRepo.getItemByID("users", resources[i]["userID"]);
         bottomWid= ListTile(
           onTap: (){
             appState.setUserProfile(user);
@@ -90,16 +95,18 @@ class _GalleryState extends State<Gallery> {
                     ],
                   )),
             )));
-        }});
-        
+        }}        
    return out;
     
 }
 
   @override
   Widget build(BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
     
-    return GridView.count(crossAxisCount: getColumnNum(w), children:tiles);
+    return Container(
+      height:600.0,
+      child: GridView.count(crossAxisCount: getColumnNum(widget.w), children:tiles)
+      
+      );
   }
 }

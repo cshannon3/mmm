@@ -17,9 +17,7 @@ class FormModel{
   Map formData={};
   Function(bool) onCompleted;
   var formKey;//= GlobalKey<FormState>();
-  FormModel({this.formData, this.h, this.tip,this.icon, this.showIconBar=true, this.validate=false }){
-   
-  }
+  FormModel({this.formData, this.h, this.tip,this.icon, this.showIconBar=true, this.validate=false });
   
   setKey(String key, dynamic val){formData["buffer"][key]=val;}
   dynamic getVal(String key)=>formData["buffer"][key];
@@ -54,6 +52,7 @@ const List org = [
 Map userInfo()=>{
     "id":"userInfo",
     "isValidated":false,
+    "formKey": "",
     "icon":Icons.person_outline,
     "h":500.0,
     "tooltip":"User Info",
@@ -76,6 +75,7 @@ Map userInfo()=>{
 Map orgInfo()=>{
       "id":"orgInfo",
       "isValidated":false,
+      "formKey":  "",
       "icon":Icons.pin_drop,
       "h":550.0,
       "tooltip":"Organization Info",
@@ -114,6 +114,7 @@ Map requestInfo(List designs){
   return {
       "id":"reqInfo",
       "isValidated":false,
+      "formKey": "",
       "icon":Icons.local_mall,
       "tooltip":"Requests",
       "h":500.0,
@@ -127,6 +128,7 @@ Map deliveryInfo()=>{
       "id":"deliveryInfo",
       "isValidated":false,
       "icon":Icons.verified_user,
+      "formKey": "",
       "h":500.0,
       "tooltip":"Delivery Instructions",
       "buffer":{
@@ -144,7 +146,6 @@ Map deliveryInfo()=>{
 Map loginInfo()=>{
     "isValidated":false,
     "icon":Icons.person_outline,
-
     "tooltip":"User Info",
          "buffer":{
         "verification":"",
@@ -160,9 +161,29 @@ Map loginInfo()=>{
         ]
     };
 
-Map claimInfo()=>{
+Map claimInfo(Map buffer){
+  print(buffer);
+ return  {
     "id":"claimInfo",
-    "isValidated":false,//  "formKey":  GlobalKey<FormState>(),
+    "icon":Icons.info_outline,
+    "h":600.0,
+    "tooltip":"Claim Info",
+     "buffer":{
+      "TESE":"TEKDKSA                            CSRAFVESR"
+    },
+    "items":[
+            {"type":"title", "text":"Claim Overview", "b":20},
+            {"type":"description", "text":"Organization: ${safeGet(key: "name", map: buffer["orgData"], alt: "-")}"},
+            {"type":"description", "text":"Design: ${safeGet(key: "name", map: buffer["designData"], alt: "-")}"},
+            {"type":"image", "url":"${safeGet(key: "url", map: buffer["designData"], alt: "")}"},
+            {"type":"description", "text":"Quantity Remaining:${safeGet(key: "maxQuantity", map: buffer, alt: "")} "},
+            {"type":"expanded", },
+            {"type":"submitButton", "b":20, "text":"Next"},
+    ]
+    };
+}
+Map claimVer(Map buffer)=>{
+    "id":"claimVer",
     "icon":Icons.person_outline,
     "h":550.0,
     "tooltip":"Claim Info",
@@ -183,11 +204,28 @@ Map claimInfo()=>{
             {"type":"submitButton", "b":20, "text":"Submit"},
     ]
     };
-
+Map claimReview(Map buffer)=>{
+    "id":"claimVer",
+    "icon":Icons.person_outline,
+    "h":550.0,
+    "tooltip":"Claim Info",
+     "buffer":{
+    },
+    "items":[
+            {"type":"title", "text":"Claim Review", "b":20},
+            {"type":"description", "text":"Name:"},
+            {"type":"formEntryField", "text":"Name","b":20,"key":"name"},
+            {"type":"description", "text":"Quantity Claiming:"},
+            {"type":"formEntryField", "text":"quantity", "b":20,"key":"quantity"},
+            {"type":"description", "text":"Verification Code:", "tooltip":" If you don’t have a verification code, request one by emailing delawaremakes@gmail.com"},
+            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verification", "validator":"verification"},
+            {"type":"expanded", },
+            {"type":"submitButton", "b":20, "text":"Done"},
+    ]
+    };
 Map updateInfo()=>{
     "id":"updateInfo",
     "isValidated":false,
-   // "formKey":  GlobalKey<FormState>(),
     "icon":Icons.person_outline,
     "h":700.0,
     "tooltip":"Update Info",

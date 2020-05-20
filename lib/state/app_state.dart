@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:delaware_makes/apis/googleclient/gmanager/gmanager.dart';
 
 import 'package:delaware_makes/dummy_data.dart';
 import 'package:delaware_makes/service_locator.dart';
@@ -12,13 +11,8 @@ import 'package:delaware_makes/state/docs_repo.dart';
 import 'package:delaware_makes/utils/constant.dart';
 import 'package:delaware_makes/utils/utility.dart';
 import 'package:flutter/material.dart';
-
 import 'package:delaware_makes/utils/utils.dart';
-/*
-All Data Flows through the appState class
-- It takes data from dataRepo and provides the classes to submit
- forms, and keep track of current users
-*/
+
 
 class AppState extends BaseState {
   Map currentUser, userProfileData;
@@ -28,7 +22,6 @@ class AppState extends BaseState {
   Firestore _db;
   DataRepo dataRepo;
   DocsRepo docsRepo;
- // FormManager formManager;
   AuthState authState;
   String overlay = "";
   AppState();
@@ -42,8 +35,6 @@ class AppState extends BaseState {
     docsRepo = locator<DocsRepo>();
     dataRepo = locator<DataRepo>();
   } 
-
-
   getAll({bool reinitialize = false}) async {
     if (reinitialize) { await dataRepo.loadCollectionsFromFirebase();}
     while (dataRepo.colCount.length < dummyCollections.length) {
@@ -65,7 +56,7 @@ bool isUserAdmin(){
   return safeGet(key: "isAdmin", map: currentUser, alt: false);
 }
 bool setUserProfile(Map user, {bool isCurrentUser=false}){
-  userProfileData = dataRepo.addLinkedData("users", user["id"], user );
+  userProfileData = dataRepo.getItemByID("users", user["id"], addLinkMap: true);
   if(isCurrentUser) currentUser= userProfileData;
   return true;
 }
@@ -150,9 +141,7 @@ List requestToSheet(Map<String, dynamic> map, DataRepo dataRepo){
             safeGet(key: "contactName", map: map, alt: "-"),
             safeGet(key: "name", map: map, alt: "-"), 
             safeGet(key: "name", map: dataRepo.getItemByID("designs", map["designID"]), alt: "-"),
-            safeGet(key: "quantityRequested", map: map, alt:0),
-            safeGet(key: "quantityClaimed", map: map, alt: 0),
-            safeGet(key: "quantityRecieved", map: map, alt: 0),
+            safeGet(key: "quantity", map: map, alt:0),
             safeGet(key: "requestSource", map: map, alt: "-"),
             safeGet(key: "isDone", map: map, alt: false)?"true":"false",
             safeGet(key: "createdAt", map: map, alt: "-"),

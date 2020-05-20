@@ -1,4 +1,5 @@
 
+import 'package:delaware_makes/pages/locations/loc2.dart';
 import 'package:delaware_makes/pages/pages.dart';
 import 'package:delaware_makes/root_widget.dart';
 import 'package:flutter/material.dart';
@@ -46,11 +47,15 @@ class Routes {
     router.define(designs, handler: designsHandler);
     router.define(id, handler: usersHandler);
     router.define(aboutUs, handler: aboutUsHandler);
-    router.define(locations, handler: locationsRouteHandler);
+    router.define(locations, handler: locRouterHandler);
     router.define(signIn, handler: signInHandler);
     router.define(signUp, handler: signUpHandler);
   }
 }
+var locRouterHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return RootPage(screen:MapsPage2(),currentRoute:"/map");
+});
 
 var rootHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -70,11 +75,6 @@ var aboutUsHandler = Handler(
   return RootPage(screen:AboutUsPage(),currentRoute:"/aboutus");
 });
 
-var locationsRouteHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return RootPage(screen:MapsPage(),currentRoute:"/map");
-});
-
 
 var adminHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -82,7 +82,6 @@ var adminHandler = Handler(
     });
 var usersHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
   return RootPage(screen:ProfilePage(),currentRoute:"/profile");
-// UsersScreen(params["id"][0]);
 });
 var loginHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {

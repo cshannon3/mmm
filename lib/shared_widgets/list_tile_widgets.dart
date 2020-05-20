@@ -1,10 +1,43 @@
 
-// import 'package:delaware_makes/pages/locations/locations_utils.dart';
-// import 'package:delaware_makes/routes.dart';
-// import 'package:delaware_makes/service_locator.dart';
-// import 'package:delaware_makes/state/app_state.dart';
-// import 'package:delaware_makes/utils/utility.dart';
-// import 'package:flutter/material.dart';
+
+import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:flutter/material.dart';
+
+
+
+Widget emptyListWidget(BuildContext context, String title,{String subTitle,String image = 'emptyImage.png'}){
+  return Container(
+     color: Color(0xfffafafa),
+    child:Center(
+    child: Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Container(
+          width: fullWidth(context) * .95,
+          height: fullWidth(context) * .95,
+          decoration: BoxDecoration(
+            // color: Color(0xfff1f3f6),
+            boxShadow: <BoxShadow>[
+              // BoxShadow(blurRadius: 50,offset: Offset(0, 0),color: Color(0xffe2e5ed),spreadRadius:20),
+              BoxShadow(offset: Offset(0, 0),color: Color(0xffe2e5ed),),
+              BoxShadow(blurRadius: 50,offset: Offset(10,0),color: Color(0xffffffff),spreadRadius:-5),
+            ],
+            shape: BoxShape.circle
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset('assets/images/$image',height: 170),
+            SizedBox(height: 20,),
+            customText(title,style: Theme.of(context).typography.dense.display1.copyWith(color: Color(0xff9da9c7))),
+            customText(subTitle,style: Theme.of(context).typography.dense.body2.copyWith(color: Color(0xffabb8d6))),
+        ],) 
+    ],)
+  )
+  );
+}
+
 
 // class LocationsTile extends StatelessWidget {
 //   final List<Widget> children;

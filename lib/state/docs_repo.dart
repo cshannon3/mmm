@@ -24,7 +24,7 @@ class DocsRepo{
     
      loadDoc();
      await Future.delayed(Duration(milliseconds: 100));
-     print(doc.sections);
+    // print(doc.sections);
     // doc= await gManager.getDocData(
     //   docTitle: "Website Content",
     //   documentId:content
@@ -37,7 +37,7 @@ loadDoc() async {
         if (dataItem.data != null) {
 
           Map<String, dynamic> map = dataItem.data;
-          print(map);
+         // print(map);
           doc.sections[map["id"]]= map["text"];
         }
       });

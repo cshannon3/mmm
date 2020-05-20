@@ -1,4 +1,5 @@
 
+import 'package:delaware_makes/forms/form_entry_field.dart';
 import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/service_locator.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
@@ -41,12 +42,12 @@ class _SignupState extends State<Signup> {
     child: Column(children: <Widget>[
                           formTitle("Sign Up"),
                       formDescription("Name:"),
-                      formEntryField(
+                      FormEntryField(
                         initVal: state.buffer["name"],
                           labelText: 'Name',hint: 'Enter name',
                           onChange: (val) => setState(() => state.buffer["name"] = val)),
                       formDescription("Email:"),
-                      formEntryField(
+                      FormEntryField(
                         validator:(val)=>!validateEmail(val)?'Please enter email correctly':null,
                         initVal:state.buffer["email"] ,
                           labelText: 'Email',hint: 'Enter email',
@@ -78,12 +79,12 @@ class _SignupState extends State<Signup> {
     key: _passwordKey,
     child: Column(children: <Widget>[
                           formDescription("Password:"),
-                      formEntryField(
+                      FormEntryField(
                           labelText: 'Password',hint: 'Enter password',isPassword: true,
                           onChange: (val) => setState(() => _password = val)),
 
                     formDescription("Confirm Password:"),
-                      formEntryField(
+                      FormEntryField(
                         validator: (val) =>val!=_password?"Password Doesn't Match":null,
                           labelText: 'Confirm Password',hint: 'Confirm password',isPassword: true,
                           onChange: (val) => setState(() => _passwordConfirm = val)),

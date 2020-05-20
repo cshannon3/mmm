@@ -3,7 +3,7 @@ import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 
 import 'dart:developer' as developer;
 import 'package:firebase/firebase.dart' as fb;
@@ -64,7 +64,7 @@ bool launch(String url) {
  int getColumnNum(double width) =>
       (width <= 500) ? 1 : (width > 1200) ? 4: (width / 300).floor();
 
-bool isMobile(double width)=>(width<=500);
+bool isMobile(double width)=>(width<=650);
 Widget ifMobile({double width, List<Widget> items}){
   return isMobile(width)?Column(children: items,):Row(children: items,);
 }

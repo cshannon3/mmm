@@ -1,4 +1,5 @@
 
+import 'package:delaware_makes/forms/form_entry_field.dart';
 import 'package:delaware_makes/pages/admin/components/resources_tile.dart';
 import 'package:delaware_makes/pages/admin/components/user_tile.dart';
 import 'package:delaware_makes/pages/admin/components/org_tile.dart';
@@ -18,26 +19,56 @@ class AdminPage extends StatefulWidget {
 class _AdminPageState extends State<AdminPage> {
 
   AppState appState ;
+  String key="orange";
+  String entry="";
+  String screen = "home";
+  //!appState.isUserAdmin()
   @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
      appState = locator<AppState>();
-   
-    return !appState.isUserAdmin()?Container(child: Center(child:Text("You ain't no admin")),):
-    ListView(
+    return key==entry?view():login();
+   // Container(child: Center(child:Text("You ain't no admin")),):
+    
+  }
+
+  Widget login(){
+    return Container(
+      child: Center(child: Column(
+        children: [
+          Text("Enter Code"),
+          Container(width: 300.0,
+          child: 
+          FormEntryField(
+            labelText: 'code',
+              initVal:entry,
+              onChange: (val)=>setState(()=>entry=val)
+          )
+          ,)
+        ],
+      ),)
+    );
+  }
+
+  Widget view(){
+    return 
+    
+     ListView(
       children: [
        Padding(
          padding: const EdgeInsets.all(8.0),
          child: formTitle("Admin Page", underline: true),
        ),
         Row(children: <Widget>[gSheet(), gDoc(),],),
-        AdminOrg(),
+      //  AdminOrg(),
         AdminUsers(),
         formTitle("Resources", underline: true),
         AdminResources()
       ]
     );
   }
+
+  
 
 saveAll() async{
   List vals = [];
