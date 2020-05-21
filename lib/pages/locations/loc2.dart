@@ -39,6 +39,7 @@ class _MapsPage2State extends State<MapsPage2> {
   DataRepo dataRepo;
   List<DesignModel> designs;
   List<RequestModel> requests;
+  
 
  @override
   void initState() {
@@ -87,6 +88,7 @@ class _MapsPage2State extends State<MapsPage2> {
     List dropOffData =dataRepo.getItemsWhere("dropoffs");
     List pickUpData = dataRepo.getItemsWhere("pickups");
     
+    
     return
          isMobile(MediaQuery.of(context).size.width) ? 
             Column(
@@ -110,7 +112,13 @@ class _MapsPage2State extends State<MapsPage2> {
               optionsBar(orgsData, dropOffData, pickUpData)
                ],);
   }
-Widget optionsBar(List orgsData,List dropOffData,List pickUpData) => Expanded(
+Widget optionsBar(List orgsData,List dropOffData,List pickUpData){
+  List<RequestModel> remaining = requests.where((element) => element.remaining()>0).toList();
+    remaining.sort((a,b)=> b.quantityRequested.compareTo(a.quantityRequested));
+    List<RequestModel> closed = requests.where((element) => element.remaining()<=0).toList();
+    closed.sort((a,b)=> b.quantityRequested.compareTo(a.quantityRequested));
+
+  return Expanded(
         child: Padding(
           padding: EdgeInsets.all(10),
           child: ListView(children: [
@@ -121,7 +129,7 @@ Widget optionsBar(List orgsData,List dropOffData,List pickUpData) => Expanded(
                           decoration: TextDecoration.underline)),
             ),
         // filterBar(),
-         ...requests.where((element) => element.remaining()>0).map((e) => e.requestTile()),
+         ...remaining.map((e) => e.requestTile()),
         Center(
               child: Text("Completed",
                       style: TextStyle(
@@ -130,9 +138,7 @@ Widget optionsBar(List orgsData,List dropOffData,List pickUpData) => Expanded(
             ),
              ...requests.where((element) => element.remaining()<=0).map((e) => e.requestTile()),
           ]
-)));
-
-
+)));}
 //  List<Widget> requestsList(){
 //   List<Widget> out=[];
 //   requests.forEach((element) {
@@ -483,7 +489,7 @@ class RequestModel{
                   width:2
                 ), borderRadius: BorderRadius.circular(20)
               ),
-              height: 40.0, width:400.0,
+              height: 40.0, width:40.0,
               child: Center(child: Text("$quantityClaimed",style: TextStyle(fontSize:16.0),)),
             ),
           ),

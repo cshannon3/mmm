@@ -94,8 +94,45 @@ Widget nihEarSavers()=>   Center(
                       onPressed: ()=>launch("https://3dprint.nih.gov/discover/3dpx-013410")
                       ),
                    ],),
-                   )),
+                   )),                
 );
+
+Widget template()=>   Center(
+  child:   Container(
+                  width:300.0,
+                  height:300.0,
+                  child: StylizedImageBox(
+                    url:"https://scontent.fphl2-3.fna.fbcdn.net/v/t1.0-9/98574660_3256293901057024_8901266270092001280_o.jpg?_nc_cat=104&_nc_sid=825194&_nc_ohc=3A_ze86a3DsAX_pIwPi&_nc_ht=scontent.fphl2-3.fna&oh=71d4c7383f504fa413b303da9b877157&oe=5EECC142" ,
+                   bottomWidget: Row(children: <Widget>[
+                    Text("Beebe mask template ",style: TextStyle(color:Colors.white),) ,
+                    Expanded(child: Container(),),
+                    iconButton(
+                      icon: CommonIcons.LINK, 
+                      color: Colors.white,
+                      onPressed: ()=>launch("https://www.thingiverse.com/thing:4380238")
+                      ),
+                   ],),
+                   )),                
+);
+
+Widget biasTape()=>   Center(
+  child:   Container(
+                  width:300.0,
+                  height:300.0,
+                  child: StylizedImageBox(
+                    url:"https://scontent.fphl2-3.fna.fbcdn.net/v/t1.0-9/98574660_3256293901057024_8901266270092001280_o.jpg?_nc_cat=104&_nc_sid=825194&_nc_ohc=3A_ze86a3DsAX_pIwPi&_nc_ht=scontent.fphl2-3.fna&oh=71d4c7383f504fa413b303da9b877157&oe=5EECC142" ,
+                   bottomWidget: Row(children: <Widget>[
+                    Text("Beebe mask template ",style: TextStyle(color:Colors.white),) ,
+                    Expanded(child: Container(),),
+                    iconButton(
+                      icon: CommonIcons.LINK, 
+                      color: Colors.white,
+                      onPressed: ()=>launch("https://www.thingiverse.com/thing:4380238")
+                      ),
+                   ],),
+                   )),                
+);
+
 Widget vert()=>   Center(
   child:   Container(
                   width:300.0,

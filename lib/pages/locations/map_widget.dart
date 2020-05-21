@@ -14,13 +14,14 @@ enum PlaceType{
   PICKUP
 }
 
-Map<PlaceType, String> icons ={
+
+class GoogleMap extends StatelessWidget {
+ final Map<PlaceType, String> icons ={
   PlaceType.ORG:"http://maps.google.com/mapfiles/kml/paddle/grn-circle-lv.png",
   PlaceType.DROPOFF:"http://maps.google.com/mapfiles/kml/paddle/wht-stars-lv.png",
   PlaceType.PICKUP:"http://maps.google.com/mapfiles/kml/paddle/ylw-circle-lv.png",
 
 };
-class GoogleMap extends StatelessWidget {
    final List orgsData;
    final List pickupData;
    final List dropOffData;
@@ -76,7 +77,6 @@ addItems(gmaps.GMap map,{ List list, PlaceType placeType}){
       });
 }
 String makeContent(Map map){
-  
   var contentString = '<div id="content">' +
     '<div id="siteNotice">' +
     '</div>' +
@@ -95,7 +95,6 @@ String makeContent(Map map){
          '<img src="$value" alt="Smiley face" height="250" width="250">';
         });
      }
- // contentString += '<p><b>Address:${safeGet(key:"address", map:map, alt:"")}</b>.</p>';
 
    contentString+=// '<p><b> Pickup Times:</b>.</p>' +
    // '<p><b> Contact Info:</b><a href="https://www.facebook.com/kathy.buterbaugh.7"> Kathy Buterbaugh </p>' +

@@ -375,17 +375,3 @@ Map<String, dynamic> newClaim(Map map, String id, String now, String groupID) =>
           : map["quantity"],
     };
 
-// case "signUp":return Signup(); break;
-// case "signIn":  return  SignIn();break;
-// case 'login': return   WelcomePage(); break;
-//  if (map.containsKey("orgID"))
-//         reqOrg = await dataRepo.getModelFromFirestore(
-//             modelID: map["orgID"], collectionName: "orgs");
-//       else {
-//Map<String, dynamic> resourceData = newResource(map);
-
-    //  if (currentForm.formData.containsKey("formKey")){
-      //     currentForm.formData["formKey"].
-      //  }
-      // print(buffer);
-      // print(currentType);

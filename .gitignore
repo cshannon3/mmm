@@ -34,6 +34,7 @@
 lib/generated_plugin_registrant.dart
 lib/utils/secrets.dart
 lib/old/
+web/secrets.js
 # Symbolication related
 app.*.symbols
 

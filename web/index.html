@@ -10,6 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="de_makes_final">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/png" href="favicon.png"/>
@@ -29,6 +30,7 @@
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-messaging.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-storage.js"></script>
+  <script src="secrets.js"></script>
   <!-- TODO: Add SDKs for Firebase products that you want to use
       https://firebase.google.com/docs/web/setup#available-libraries -->
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
@@ -40,24 +42,12 @@
       });
     }
   </script>
-  <script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-    apiKey: "AIzaSyAo5EYIc0i9VCBqVl_leCKsMu5o5U93Db0",
-    authDomain: "million-more-makers.firebaseapp.com",
-    databaseURL: "https://million-more-makers.firebaseio.com",
-    projectId: "million-more-makers",
-    storageBucket: "million-more-makers.appspot.com",
-    messagingSenderId: "220847770471",
-    appId: "1:220847770471:web:8e72d93c63ba2925053dc2",
-    measurementId: "G-J60Y6KL543"
-  };
 
+  <script>
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
   </script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <meta name="google-signin-client_id" content="670043577090-425eoftkqupia7d7hmg45qlks37stjei.apps.googleusercontent.com">
       <script src="https://apis.google.com/js/api.js"></script> 
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyqcAMgfSVkBU3_L5tAGnUVBtoMeqadBY"></script>
   <script src="main.dart.js" type="application/javascript"></script>
