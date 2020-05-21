@@ -53,10 +53,11 @@ class AppComponentState extends State<AppComponent> {
   Widget build(BuildContext context) {
  
     return  MaterialApp(
-      title: 'DE Makes',
+      title: 'Delaware Makes',
       debugShowCheckedModeBanner: false,
            theme: ThemeData(
-          textTheme: GoogleFonts.merriweatherTextTheme() //  .copyWith( bodyText1: GoogleFonts.oswald(), ),
+             fontFamily: 'HelveticaNeue',
+         //  .copyWith( bodyText1: GoogleFonts.oswald(), ),
       ),
       color: Colors.grey,
       routes: Routes.route(),

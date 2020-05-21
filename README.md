@@ -1,4 +1,4 @@
-# de_makes_final
+# Delaware Makes
 
 A new Flutter project.
 flutter packages pub run flapp

@@ -84,7 +84,7 @@ class _RootPageState extends State<RootPage> {
         leading: Container(),
         title: InkWell(
           onTap: () { tappedMenuButton(context, "/"); },
-          child: Text("DE Makes",
+          child: Text("Delaware Makes",
               style: GoogleFonts.merriweather(
                   textStyle: TextStyle(color: Colors.white, fontSize: 30.0))),
         ),
@@ -122,7 +122,8 @@ class _RootPageState extends State<RootPage> {
           ? Center(child: CircularProgressIndicator())
           : Stack(
             children: <Widget>[
-              bodyPadding(widget.screen, s),
+              //bodyPadding(widget.screen, s),
+              widget.screen,
               formManager.getOverlay()
             ],
           ),

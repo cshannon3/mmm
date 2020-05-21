@@ -91,26 +91,32 @@ class _MapsPage2State extends State<MapsPage2> {
     
     return
          isMobile(MediaQuery.of(context).size.width) ? 
-            Column(
-              children: <Widget>[
-                mainMyTabs(
-                  selected: selected,
-                  items: {
-                    "List":(){setState(() {
-                      selected="List";
-                    });},
-                    "Map":(){setState(() {
-                      selected="Map";
-                    });}}
-                ),
-                selected=="List"?optionsBar(orgsData, dropOffData, pickUpData):mapWidget(orgsData, dropOffData, pickUpData)
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  mainMyTabs(
+                    selected: selected,
+                    items: {
+                      "List":(){setState(() {
+                        selected="List";
+                      });},
+                      "Map":(){setState(() {
+                        selected="Map";
+                      });}}
+                  ),
+                  selected=="List"?optionsBar(orgsData, dropOffData, pickUpData):mapWidget(orgsData, dropOffData, pickUpData)
+                ],
+              ),
             ) :
 
-              Row(children: [
-              mapWidget(orgsData, dropOffData, pickUpData),
-              optionsBar(orgsData, dropOffData, pickUpData)
-               ],);
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal:30.0),
+                child: Row(children: [
+                mapWidget(orgsData, dropOffData, pickUpData),
+                optionsBar(orgsData, dropOffData, pickUpData)
+                 ],),
+              );
   }
 Widget optionsBar(List orgsData,List dropOffData,List pickUpData){
   List<RequestModel> remaining = requests.where((element) => element.remaining()>0).toList();
@@ -415,8 +421,8 @@ class RequestModel{
       );
     }
          Widget claimButton()=> MaterialButton(
-                      height: 40,
-                      minWidth: 60.0,
+                      height: 30,
+                      minWidth: 50.0,
                       onPressed: makeClaim,
                       color: Colors.orangeAccent,
                       textColor: Colors.white,
@@ -426,8 +432,8 @@ class RequestModel{
                           style:  TextStyle(color: Colors.white, fontSize: 12.0)),
             );
    Widget updateButton(Map claimData)=> MaterialButton(
-                      height: 40,
-                      minWidth: 60.0,
+                      height: 30,
+                      minWidth: 50.0,
                       onPressed: (){
                         var formManager = locator<FormManager>();
                         formManager.initUpdate(claimData:claimData);
@@ -438,7 +444,7 @@ class RequestModel{
                       textColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(18.0)),
-                      child: Text("Update Claim",
+                      child: Text("Update",
                           style:  TextStyle(color: Colors.white, fontSize: 12.0)),
             );
 

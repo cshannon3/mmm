@@ -1,11 +1,9 @@
 
 import 'package:delaware_makes/pages/home/components/count.dart';
-import 'package:delaware_makes/pages/home/components/gallery.dart';
 import 'package:delaware_makes/pages/home/components/intro.dart';
 import 'package:delaware_makes/pages/home/components/maker_section.dart';
 import 'package:delaware_makes/pages/home/components/request_section.dart';
 import 'package:delaware_makes/service_locator.dart';
-import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/state/platform_state.dart';
 import 'package:flutter/material.dart';
 
@@ -23,27 +21,31 @@ class HomePageMain extends StatelessWidget {
         width: double.infinity,
         child: ListView(
           children: <Widget>[
-            SizedBox(height:20),
-           Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IntroBlock(),
+            
+           IntroBlock(isMobile: isMobile,),
+            SizedBox(height:30),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal:isMobile?5.0:30.0),
+            //   child: Container(
+            //     height:isMobile?250.0:250.0,
+            //     child: CountsWidget(isMobile: isMobile,)
+            //     ),
+            // ),
+            SizedBox(height:30),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal:isMobile?5.0:30.0),
+              child: RequestSection(isMobile: isMobile,),
             ),
-            SizedBox(height:10),
-            Container(
-              height:isMobile?250.0:250.0,
-              child: CountsWidget()
-              ),
             SizedBox(height:30),
-            RequestSection(isMobile: isMobile,),
-            SizedBox(height:30),
-            MakerSection(isMobile: isMobile,),
-          // DesignsPage(),
-          //  Container( height: 50.0,
-          //  width: double.infinity,
-          //       child: formTitle("", underline:true),),
-       // Gallery(w:s.width),
-          SizedBox(height:100),
-        Container(
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal:isMobile?5.0:30.0),
+              child: MakerSection(isMobile: isMobile,),
+            ),
+            
+            SizedBox(height:100),
+          
+          
+          Container(
           color:Colors.black,
           height: 150.0,
           width: double.infinity,
@@ -69,3 +71,9 @@ class HomePageMain extends StatelessWidget {
       //           Container( height: double.infinity,width: double.infinity,
       //              child:titleText==""?null: formTitle(titleText, underline:true),
       //           ),minH: 50.0, maxH: 50.0);
+
+          // DesignsPage(),
+          //  Container( height: 50.0,
+          //  width: double.infinity,
+          //       child: formTitle("", underline:true),),
+       // Gallery(w:s.width),

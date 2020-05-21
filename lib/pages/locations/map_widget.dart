@@ -28,6 +28,7 @@ class GoogleMap extends StatelessWidget {
   GoogleMap({Key key, @required this.orgsData,@required this.dropOffData,@required this.pickupData}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+
     String htmlId = "7";
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(htmlId, (int viewId) {
